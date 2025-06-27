@@ -15,6 +15,7 @@ class FFGC_Installer {
         $this->create_tables();
         $this->set_default_options();
         $this->create_default_designs();
+        $this->migrate_existing_data();
         
         // Flush rewrite rules
         flush_rewrite_rules();
@@ -75,27 +76,22 @@ class FFGC_Installer {
     }
     
     private function create_default_designs() {
-        // Create a default design if none exist
-        $existing_designs = get_posts(array(
-            'post_type' => 'gift_certificate_design',
-            'posts_per_page' => 1,
-            'post_status' => 'publish'
-        ));
+        // Create default designs
+        $default_design = array(
+            'post_title' => __('Default Design', 'fluentforms-gift-certificates'),
+            'post_content' => __('Default gift certificate design', 'fluentforms-gift-certificates'),
+            'post_status' => 'publish',
+            'post_type' => 'ffgc_design',
+            'post_author' => 1
+        );
         
-        if (empty($existing_designs)) {
-            $design_id = wp_insert_post(array(
-                'post_title' => __('Default Design', 'fluentforms-gift-certificates'),
-                'post_type' => 'gift_certificate_design',
-                'post_status' => 'publish',
-                'post_content' => __('Default gift certificate design', 'fluentforms-gift-certificates')
-            ));
-            
-            if ($design_id) {
-                update_post_meta($design_id, '_min_amount', 10.00);
-                update_post_meta($design_id, '_max_amount', 1000.00);
-                update_post_meta($design_id, '_is_active', 'yes');
-                update_post_meta($design_id, '_email_template', $this->get_default_email_template());
-            }
+        $design_id = wp_insert_post($default_design);
+        
+        if ($design_id) {
+            update_post_meta($design_id, '_min_amount', 10.00);
+            update_post_meta($design_id, '_max_amount', 1000.00);
+            update_post_meta($design_id, '_is_active', 'yes');
+            update_post_meta($design_id, '_email_template', $this->get_default_email_template());
         }
     }
     
@@ -185,7 +181,7 @@ class FFGC_Installer {
     private function remove_posts() {
         // Remove all gift certificates
         $certificates = get_posts(array(
-            'post_type' => 'gift_certificate',
+            'post_type' => 'ffgc_cert',
             'posts_per_page' => -1,
             'post_status' => 'any'
         ));
@@ -196,7 +192,7 @@ class FFGC_Installer {
         
         // Remove all designs
         $designs = get_posts(array(
-            'post_type' => 'gift_certificate_design',
+            'post_type' => 'ffgc_design',
             'posts_per_page' => -1,
             'post_status' => 'any'
         ));
@@ -204,5 +200,45 @@ class FFGC_Installer {
         foreach ($designs as $design) {
             wp_delete_post($design->ID, true);
         }
+    }
+    
+    private function migrate_existing_data() {
+        $current_version = get_option('ffgc_version', '0.0.0');
+        
+        // Only migrate if upgrading from a version before 1.0.0
+        if (version_compare($current_version, '1.0.0', '<')) {
+            // Migrate existing gift certificates from old post type to new
+            $old_certificates = get_posts(array(
+                'post_type' => 'gift_certificate',
+                'posts_per_page' => -1,
+                'post_status' => 'any'
+            ));
+            
+            foreach ($old_certificates as $certificate) {
+                // Update post type
+                wp_update_post(array(
+                    'ID' => $certificate->ID,
+                    'post_type' => 'ffgc_cert'
+                ));
+            }
+            
+            // Migrate existing designs from old post type to new
+            $old_designs = get_posts(array(
+                'post_type' => 'gift_certificate_design',
+                'posts_per_page' => -1,
+                'post_status' => 'any'
+            ));
+            
+            foreach ($old_designs as $design) {
+                // Update post type
+                wp_update_post(array(
+                    'ID' => $design->ID,
+                    'post_type' => 'ffgc_design'
+                ));
+            }
+        }
+        
+        // Update version
+        update_option('ffgc_version', FFGC_VERSION);
     }
 } 

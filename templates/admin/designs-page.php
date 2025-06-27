@@ -16,15 +16,15 @@ if (!defined('ABSPATH')) {
     <div class="ffgc-designs-overview">
         <div class="ffgc-designs-header">
             <h2><?php _e('Manage Certificate Designs', 'fluentforms-gift-certificates'); ?></h2>
-            <a href="<?php echo admin_url('post-new.php?post_type=gift_certificate_design'); ?>" class="button button-primary">
-                <?php _e('Add New Design', 'fluentforms-gift-certificates'); ?>
+            <a href="<?php echo admin_url('post-new.php?post_type=ffgc_design'); ?>" class="button button-primary">
+                <?php _e('Create New Design', 'fluentforms-gift-certificates'); ?>
             </a>
         </div>
         
         <div class="ffgc-designs-grid">
             <?php
             $designs = get_posts(array(
-                'post_type' => 'gift_certificate_design',
+                'post_type' => 'ffgc_design',
                 'posts_per_page' => -1,
                 'post_status' => 'publish',
                 'orderby' => 'title',
@@ -33,8 +33,9 @@ if (!defined('ABSPATH')) {
             
             if (empty($designs)) {
                 echo '<div class="ffgc-no-designs">';
-                echo '<p>' . __('No designs found. Create your first gift certificate design!', 'fluentforms-gift-certificates') . '</p>';
-                echo '<a href="' . admin_url('post-new.php?post_type=gift_certificate_design') . '" class="button button-primary">' . __('Create Design', 'fluentforms-gift-certificates') . '</a>';
+                echo '<p>' . __('No designs found. ', 'fluentforms-gift-certificates');
+                echo '<a href="' . admin_url('post-new.php?post_type=ffgc_design') . '" class="button button-primary">' . __('Create Design', 'fluentforms-gift-certificates') . '</a>';
+                echo '</p>';
                 echo '</div>';
             } else {
                 foreach ($designs as $design) {

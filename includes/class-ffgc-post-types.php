@@ -15,15 +15,15 @@ class FFGC_Post_Types {
         add_action('init', array($this, 'register_post_types'));
         add_action('add_meta_boxes', array($this, 'add_meta_boxes'));
         add_action('save_post', array($this, 'save_meta_boxes'));
-        add_filter('manage_gift_certificate_posts_columns', array($this, 'gift_certificate_columns'));
-        add_action('manage_gift_certificate_posts_custom_column', array($this, 'gift_certificate_column_content'), 10, 2);
-        add_filter('manage_gift_certificate_design_posts_columns', array($this, 'design_columns'));
-        add_action('manage_gift_certificate_design_posts_custom_column', array($this, 'design_column_content'), 10, 2);
+        add_filter('manage_ffgc_cert_posts_columns', array($this, 'gift_certificate_columns'));
+        add_action('manage_ffgc_cert_posts_custom_column', array($this, 'gift_certificate_column_content'), 10, 2);
+        add_filter('manage_ffgc_design_posts_columns', array($this, 'design_columns'));
+        add_action('manage_ffgc_design_posts_custom_column', array($this, 'design_column_content'), 10, 2);
     }
     
     public function register_post_types() {
         // Gift Certificate post type
-        register_post_type('gift_certificate', array(
+        register_post_type('ffgc_cert', array(
             'labels' => array(
                 'name' => __('Gift Certificates', 'fluentforms-gift-certificates'),
                 'singular_name' => __('Gift Certificate', 'fluentforms-gift-certificates'),
@@ -47,7 +47,7 @@ class FFGC_Post_Types {
         ));
         
         // Gift Certificate Design post type
-        register_post_type('gift_certificate_design', array(
+        register_post_type('ffgc_design', array(
             'labels' => array(
                 'name' => __('Certificate Designs', 'fluentforms-gift-certificates'),
                 'singular_name' => __('Certificate Design', 'fluentforms-gift-certificates'),
@@ -76,7 +76,7 @@ class FFGC_Post_Types {
             'gift_certificate_details',
             __('Gift Certificate Details', 'fluentforms-gift-certificates'),
             array($this, 'gift_certificate_meta_box'),
-            'gift_certificate',
+            'ffgc_cert',
             'normal',
             'high'
         );
@@ -85,7 +85,7 @@ class FFGC_Post_Types {
             'gift_certificate_design_details',
             __('Design Details', 'fluentforms-gift-certificates'),
             array($this, 'design_meta_box'),
-            'gift_certificate_design',
+            'ffgc_design',
             'normal',
             'high'
         );
@@ -146,9 +146,9 @@ class FFGC_Post_Types {
         
         $post_type = get_post_type($post_id);
         
-        if ($post_type === 'gift_certificate') {
+        if ($post_type === 'ffgc_cert') {
             $this->save_gift_certificate_meta($post_id);
-        } elseif ($post_type === 'gift_certificate_design') {
+        } elseif ($post_type === 'ffgc_design') {
             $this->save_design_meta($post_id);
         }
     }

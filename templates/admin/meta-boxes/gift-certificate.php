@@ -94,7 +94,7 @@ if (!defined('ABSPATH')) {
                 <option value=""><?php _e('Select a design', 'fluentforms-gift-certificates'); ?></option>
                 <?php
                 $designs = get_posts(array(
-                    'post_type' => 'gift_certificate_design',
+                    'post_type' => 'ffgc_design',
                     'posts_per_page' => -1,
                     'post_status' => 'publish',
                     'meta_query' => array(

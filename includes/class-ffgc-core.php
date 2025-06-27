@@ -148,7 +148,7 @@ class FFGC_Core {
         }
         
         $certificate = get_posts(array(
-            'post_type' => 'gift_certificate',
+            'post_type' => 'ffgc_cert',
             'meta_query' => array(
                 array(
                     'key' => '_certificate_code',

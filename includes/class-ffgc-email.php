@@ -18,7 +18,7 @@ class FFGC_Email {
     public function send_gift_certificate($certificate_id) {
         $certificate = get_post($certificate_id);
         
-        if (!$certificate || $certificate->post_type !== 'gift_certificate') {
+        if (!$certificate || $certificate->post_type !== 'ffgc_cert') {
             return false;
         }
         
@@ -284,7 +284,7 @@ View in admin: %s', 'fluentforms-gift-certificates'),
             $recipient_name,
             $recipient_email,
             current_time('Y-m-d H:i:s'),
-            admin_url('edit.php?post_type=gift_certificate')
+            admin_url('edit.php?post_type=ffgc_cert')
         );
         
         $headers = array('Content-Type: text/plain; charset=UTF-8');
@@ -324,7 +324,7 @@ View in admin: %s', 'fluentforms-gift-certificates'),
             number_format($remaining, 2),
             $form_id,
             current_time('Y-m-d H:i:s'),
-            admin_url('edit.php?post_type=gift_certificate')
+            admin_url('edit.php?post_type=ffgc_cert')
         );
         
         $headers = array('Content-Type: text/plain; charset=UTF-8');

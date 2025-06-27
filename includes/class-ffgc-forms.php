@@ -107,7 +107,7 @@ class FFGC_Forms {
         echo '<option value="">' . __('Select a design', 'fluentforms-gift-certificates') . '</option>';
         
         $designs = get_posts(array(
-            'post_type' => 'gift_certificate_design',
+            'post_type' => 'ffgc_design',
             'posts_per_page' => -1,
             'post_status' => 'publish',
             'meta_query' => array(
@@ -243,14 +243,13 @@ class FFGC_Forms {
         $expiry_days = get_option('ffgc_expiry_days', 365);
         $expiry_date = date('Y-m-d', strtotime("+{$expiry_days} days"));
         
-        $post_data = array(
-            'post_title' => sprintf(__('Gift Certificate - %s', 'fluentforms-gift-certificates'), $code),
-            'post_type' => 'gift_certificate',
+        $certificate_id = wp_insert_post(array(
+            'post_title' => sprintf(__('Gift Certificate - %s', 'fluentforms-gift-certificates'), $data['recipient_name']),
+            'post_content' => $data['personal_message'],
             'post_status' => 'publish',
-            'post_content' => ''
-        );
-        
-        $certificate_id = wp_insert_post($post_data);
+            'post_type' => 'ffgc_cert',
+            'post_author' => 1
+        ));
         
         if ($certificate_id) {
             update_post_meta($certificate_id, '_certificate_code', $code);
@@ -277,7 +276,7 @@ class FFGC_Forms {
             $code = $prefix . '-' . $suffix;
             
             $existing = get_posts(array(
-                'post_type' => 'gift_certificate',
+                'post_type' => 'ffgc_cert',
                 'meta_query' => array(
                     array(
                         'key' => '_certificate_code',
@@ -294,7 +293,7 @@ class FFGC_Forms {
     
     private function apply_gift_certificate($code, $form_id, $submission_id) {
         $certificate = get_posts(array(
-            'post_type' => 'gift_certificate',
+            'post_type' => 'ffgc_cert',
             'meta_query' => array(
                 array(
                     'key' => '_certificate_code',
@@ -381,7 +380,7 @@ class FFGC_Forms {
         }
         
         $certificate = get_posts(array(
-            'post_type' => 'gift_certificate',
+            'post_type' => 'ffgc_cert',
             'meta_query' => array(
                 array(
                     'key' => '_certificate_code',

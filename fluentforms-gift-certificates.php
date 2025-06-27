@@ -53,6 +53,13 @@ function ffgc_debug_fluent_forms_status() {
     $table_name = $wpdb->prefix . 'fluentform_forms';
     $table_exists = $wpdb->get_var("SHOW TABLES LIKE '$table_name'") == $table_name;
     echo '<li>Fluent Forms Database Table Exists: ' . ($table_exists ? 'Yes' : 'No') . '</li>';
+    
+    // Check post types
+    $post_types = get_post_types(array(), 'names');
+    echo '<li>ffgc_cert Post Type Registered: ' . (in_array('ffgc_cert', $post_types) ? 'Yes' : 'No') . '</li>';
+    echo '<li>ffgc_design Post Type Registered: ' . (in_array('ffgc_design', $post_types) ? 'Yes' : 'No') . '</li>';
+    echo '<li>Old gift_certificate Post Type Found: ' . (in_array('gift_certificate', $post_types) ? 'Yes' : 'No') . '</li>';
+    echo '<li>Old gift_certificate_design Post Type Found: ' . (in_array('gift_certificate_design', $post_types) ? 'Yes' : 'No') . '</li>';
     echo '</ul></div>';
 }
 
@@ -148,6 +155,19 @@ add_action('init', function() {
     if (!$ffgc_initialized && ffgc_check_fluent_forms()) {
         ffgc_init();
     }
+    
+    // Force re-register post types if old ones are still present
+    $post_types = get_post_types(array(), 'names');
+    if (in_array('gift_certificate', $post_types) || in_array('gift_certificate_design', $post_types)) {
+        // Clear the post type cache and re-register
+        unset($GLOBALS['wp_post_types']['gift_certificate']);
+        unset($GLOBALS['wp_post_types']['gift_certificate_design']);
+        
+        // Force re-register our post types
+        if (!$ffgc_initialized) {
+            ffgc_init();
+        }
+    }
 }, 20);
 
 // Activation hook
@@ -177,16 +197,35 @@ function ffgc_activate() {
         );
     }
     
+    // Clear any cached data
+    wp_cache_flush();
+
+    // Clear object cache if available
+    if (function_exists('wp_cache_flush_group')) {
+        wp_cache_flush_group('posts');
+        wp_cache_flush_group('post_meta');
+    }
+
+    // Clear transients
+    delete_transient('ffgc_post_types');
+    
     // Create database tables and default options
     require_once FFGC_PLUGIN_DIR . 'includes/class-ffgc-installer.php';
     $installer = new FFGC_Installer();
     $installer->install();
+    
+    // Force refresh post types
+    flush_rewrite_rules();
 }
 
 // Deactivation hook
 register_deactivation_hook(__FILE__, 'ffgc_deactivate');
 function ffgc_deactivate() {
-    // Cleanup if needed
+    // Clear rewrite rules
+    flush_rewrite_rules();
+    
+    // Clear any cached data
+    wp_cache_flush();
 }
 
 // Uninstall hook

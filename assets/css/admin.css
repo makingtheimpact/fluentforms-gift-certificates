@@ -1,0 +1,370 @@
+/**
+ * Admin Styles for Fluent Forms Gift Certificates
+ */
+
+/* Dashboard Stats */
+.ffgc-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin: 20px 0;
+}
+
+.ffgc-stat-card {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.ffgc-stat-card h3 {
+    margin: 0 0 10px 0;
+    color: #23282d;
+    font-size: 16px;
+}
+
+.ffgc-stat-number {
+    font-size: 32px;
+    font-weight: bold;
+    color: #0073aa;
+}
+
+/* Quick Actions */
+.ffgc-quick-actions {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 20px 0;
+}
+
+.ffgc-action-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+/* Recent Activity */
+.ffgc-recent-activity {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 20px 0;
+}
+
+.ffgc-activity-list {
+    margin-top: 15px;
+}
+
+.ffgc-activity-item {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    border: 1px solid #eee;
+    border-radius: 6px;
+    margin-bottom: 10px;
+    background: #f9f9f9;
+}
+
+.ffgc-activity-icon {
+    font-size: 24px;
+    margin-right: 15px;
+}
+
+.ffgc-activity-content {
+    flex: 1;
+}
+
+.ffgc-activity-actions {
+    margin-left: 15px;
+}
+
+/* Shortcodes Info */
+.ffgc-shortcodes-info {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 20px 0;
+}
+
+.ffgc-shortcode-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    margin-top: 15px;
+}
+
+.ffgc-shortcode-item {
+    background: #f9f9f9;
+    padding: 15px;
+    border-radius: 6px;
+    border-left: 4px solid #0073aa;
+}
+
+.ffgc-shortcode-item h4 {
+    margin: 0 0 10px 0;
+    color: #23282d;
+}
+
+.ffgc-shortcode-item code {
+    background: #fff;
+    padding: 5px 8px;
+    border-radius: 3px;
+    font-size: 13px;
+    color: #d73a49;
+}
+
+/* Designs Grid */
+.ffgc-designs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    margin: 20px 0;
+}
+
+.ffgc-design-card {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.ffgc-design-image {
+    text-align: center;
+    padding: 20px;
+    background: #f9f9f9;
+}
+
+.ffgc-design-image img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 4px;
+}
+
+.ffgc-design-image-placeholder {
+    text-align: center;
+    padding: 40px 20px;
+    background: #f9f9f9;
+    color: #666;
+}
+
+.ffgc-design-image-placeholder .dashicons {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+}
+
+.ffgc-design-content {
+    padding: 20px;
+}
+
+.ffgc-design-content h3 {
+    margin: 0 0 10px 0;
+    color: #23282d;
+}
+
+.ffgc-design-meta {
+    margin: 15px 0;
+    padding: 15px;
+    background: #f9f9f9;
+    border-radius: 4px;
+}
+
+.ffgc-design-price-range {
+    margin-bottom: 10px;
+}
+
+.ffgc-design-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+/* Status Indicators */
+.ffgc-status {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 3px;
+    font-size: 12px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.ffgc-status.unused {
+    background: #d4edda;
+    color: #155724;
+}
+
+.ffgc-status.used {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.ffgc-status.expired {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.ffgc-status.active {
+    background: #d4edda;
+    color: #155724;
+}
+
+.ffgc-status.inactive {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+/* Settings Info */
+.ffgc-settings-info {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 20px 0;
+}
+
+.ffgc-info-section {
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #eee;
+}
+
+.ffgc-info-section:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.ffgc-info-section h3 {
+    margin: 0 0 10px 0;
+    color: #23282d;
+}
+
+/* Design Tips */
+.ffgc-design-tips {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 20px 0;
+}
+
+.ffgc-tips-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-top: 15px;
+}
+
+.ffgc-tip {
+    background: #f9f9f9;
+    padding: 15px;
+    border-radius: 6px;
+    border-left: 4px solid #0073aa;
+}
+
+.ffgc-tip h3 {
+    margin: 0 0 10px 0;
+    color: #23282d;
+    font-size: 16px;
+}
+
+/* Certificate Actions */
+.ffgc-certificate-actions {
+    background: #f9f9f9;
+    padding: 15px;
+    border-radius: 6px;
+    margin-top: 20px;
+}
+
+.ffgc-certificate-actions h3 {
+    margin: 0 0 15px 0;
+    color: #23282d;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .ffgc-stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .ffgc-action-buttons {
+        flex-direction: column;
+    }
+    
+    .ffgc-action-buttons .button {
+        text-align: center;
+    }
+    
+    .ffgc-activity-item {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .ffgc-activity-icon {
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+    
+    .ffgc-activity-actions {
+        margin-left: 0;
+        margin-top: 10px;
+    }
+    
+    .ffgc-designs-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .ffgc-shortcode-list {
+        grid-template-columns: 1fr;
+    }
+    
+    .ffgc-tips-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Loading States */
+.ffgc-loading {
+    text-align: center;
+    padding: 20px;
+    color: #666;
+}
+
+.ffgc-loading::before {
+    content: '';
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #f3f3f3;
+    border-top: 2px solid #0073aa;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-right: 10px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* No Designs State */
+.ffgc-no-designs {
+    text-align: center;
+    padding: 40px 20px;
+    background: #f9f9f9;
+    border-radius: 8px;
+}
+
+.ffgc-no-designs p {
+    margin-bottom: 20px;
+    color: #666;
+    font-size: 16px;
+} 

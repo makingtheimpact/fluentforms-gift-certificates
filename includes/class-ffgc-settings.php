@@ -258,22 +258,32 @@ class FFGC_Settings {
     public function forms_enabled_field_callback() {
         $enabled_forms = get_option('ffgc_forms_enabled', array());
         
-        // Get all Fluent Forms
-        $forms = wpFluent()->table('fluentform_forms')->select(['id', 'title'])->get();
-        
-        if (empty($forms)) {
-            echo '<p>' . __('No Fluent Forms found.', 'fluentforms-gift-certificates') . '</p>';
+        // Check if wpFluent function is available
+        if (!function_exists('wpFluent')) {
+            echo '<p>' . __('Fluent Forms is not properly loaded. Please refresh the page.', 'fluentforms-gift-certificates') . '</p>';
             return;
         }
         
-        echo '<fieldset>';
-        foreach ($forms as $form) {
-            $checked = in_array($form->id, $enabled_forms) ? 'checked' : '';
-            echo '<label><input type="checkbox" name="ffgc_forms_enabled[]" value="' . esc_attr($form->id) . '" ' . $checked . ' /> ';
-            echo esc_html($form->title) . '</label><br>';
+        // Get all Fluent Forms
+        try {
+            $forms = wpFluent()->table('fluentform_forms')->select(['id', 'title'])->get();
+            
+            if (empty($forms)) {
+                echo '<p>' . __('No Fluent Forms found.', 'fluentforms-gift-certificates') . '</p>';
+                return;
+            }
+            
+            echo '<fieldset>';
+            foreach ($forms as $form) {
+                $checked = in_array($form->id, $enabled_forms) ? 'checked' : '';
+                echo '<label><input type="checkbox" name="ffgc_forms_enabled[]" value="' . esc_attr($form->id) . '" ' . $checked . ' /> ';
+                echo esc_html($form->title) . '</label><br>';
+            }
+            echo '</fieldset>';
+            echo '<p class="description">' . __('Select which forms should have gift certificate functionality.', 'fluentforms-gift-certificates') . '</p>';
+        } catch (Exception $e) {
+            echo '<p>' . __('Error loading Fluent Forms. Please refresh the page.', 'fluentforms-gift-certificates') . '</p>';
         }
-        echo '</fieldset>';
-        echo '<p class="description">' . __('Select which forms should have gift certificate functionality.', 'fluentforms-gift-certificates') . '</p>';
     }
     
     public function field_label_callback() {

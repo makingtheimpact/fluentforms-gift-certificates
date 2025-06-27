@@ -4,8 +4,8 @@
  * Plugin URI: https://github.com/your-username/fluentforms-gift-certificates
  * Description: Generate and manage gift certificates for Fluent Forms with customizable designs and automatic email delivery.
  * Version: 1.0.0
- * Author: Your Name
- * Author URI: https://yourwebsite.com
+ * Author: Making The Impact LLC
+ * Author URI: https://makingtheimpact.com
  * License: GPL v2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain: fluentforms-gift-certificates
@@ -21,6 +21,9 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
+// Include WordPress plugin functions
+require_once(ABSPATH . 'wp-admin/includes/plugin.php');
+
 // Define plugin constants
 define('FFGC_VERSION', '1.0.0');
 define('FFGC_PLUGIN_FILE', __FILE__);
@@ -28,9 +31,40 @@ define('FFGC_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('FFGC_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('FFGC_PLUGIN_BASENAME', plugin_basename(__FILE__));
 
+// Global flag to prevent multiple initializations
+global $ffgc_initialized;
+$ffgc_initialized = false;
+
+// Debug function for troubleshooting
+function ffgc_debug_fluent_forms_status() {
+    if (!current_user_can('manage_options')) {
+        return;
+    }
+    
+    echo '<div class="notice notice-info"><p><strong>Fluent Forms Gift Certificates Debug Info:</strong></p>';
+    echo '<ul>';
+    echo '<li>Fluent Forms Plugin Active: ' . (is_plugin_active('fluentform/fluentform.php') ? 'Yes' : 'No') . '</li>';
+    echo '<li>Fluent Forms Pro Plugin Active: ' . (is_plugin_active('fluentform-pro/fluentform-pro.php') ? 'Yes' : 'No') . '</li>';
+    echo '<li>wpFluent Function Available: ' . (function_exists('wpFluent') ? 'Yes' : 'No') . '</li>';
+    echo '<li>FluentForm Class Available: ' . (class_exists('FluentForm') ? 'Yes' : 'No') . '</li>';
+    echo '<li>FluentForm\App\Modules\Form\Form Class Available: ' . (class_exists('FluentForm\App\Modules\Form\Form') ? 'Yes' : 'No') . '</li>';
+    
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'fluentform_forms';
+    $table_exists = $wpdb->get_var("SHOW TABLES LIKE '$table_name'") == $table_name;
+    echo '<li>Fluent Forms Database Table Exists: ' . ($table_exists ? 'Yes' : 'No') . '</li>';
+    echo '</ul></div>';
+}
+
+// Add debug info to admin notices if WP_DEBUG is enabled
+if (defined('WP_DEBUG') && WP_DEBUG) {
+    add_action('admin_notices', 'ffgc_debug_fluent_forms_status');
+}
+
 // Check if Fluent Forms is active
 function ffgc_check_fluent_forms() {
-    if (!class_exists('FluentForm')) {
+    // Check if Fluent Forms plugin is active
+    if (!is_plugin_active('fluentform/fluentform.php') && !is_plugin_active('fluentform-pro/fluentform-pro.php')) {
         add_action('admin_notices', function() {
             echo '<div class="notice notice-error"><p>' . 
                  __('Fluent Forms Gift Certificates requires Fluent Forms to be installed and activated.', 'fluentforms-gift-certificates') . 
@@ -38,11 +72,54 @@ function ffgc_check_fluent_forms() {
         });
         return false;
     }
+    
+    // Check if Fluent Forms database tables exist
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'fluentform_forms';
+    $table_exists = $wpdb->get_var("SHOW TABLES LIKE '$table_name'") == $table_name;
+    
+    if (!$table_exists) {
+        add_action('admin_notices', function() {
+            echo '<div class="notice notice-error"><p>' . 
+                 __('Fluent Forms Gift Certificates detected Fluent Forms but the database tables are not properly set up. Please deactivate and reactivate Fluent Forms.', 'fluentforms-gift-certificates') . 
+                 '</p></div>';
+        });
+        return false;
+    }
+    
+    // Check if wpFluent function is available
+    if (!function_exists('wpFluent')) {
+        add_action('admin_notices', function() {
+            echo '<div class="notice notice-warning"><p>' . 
+                 __('Fluent Forms Gift Certificates is waiting for Fluent Forms to fully load...', 'fluentforms-gift-certificates') . 
+                 '</p></div>';
+        });
+        return false;
+    }
+    
+    // Check for Fluent Forms classes (multiple possible class names)
+    if (!class_exists('FluentForm') && !class_exists('FluentForm\App\Modules\Form\Form')) {
+        // If classes aren't loaded yet, we'll check again later
+        add_action('admin_notices', function() {
+            echo '<div class="notice notice-warning"><p>' . 
+                 __('Fluent Forms Gift Certificates is checking for Fluent Forms compatibility...', 'fluentforms-gift-certificates') . 
+                 '</p></div>';
+        });
+        return false;
+    }
+    
     return true;
 }
 
 // Initialize plugin
 function ffgc_init() {
+    global $ffgc_initialized;
+    
+    // Prevent multiple initializations
+    if ($ffgc_initialized) {
+        return;
+    }
+    
     if (!ffgc_check_fluent_forms()) {
         return;
     }
@@ -57,15 +134,47 @@ function ffgc_init() {
     
     // Initialize core plugin
     new FFGC_Core();
+    
+    // Mark as initialized
+    $ffgc_initialized = true;
+    do_action('ffgc_initialized');
 }
-add_action('plugins_loaded', 'ffgc_init');
+
+// Try to initialize on plugins_loaded, but also try on init if needed
+add_action('plugins_loaded', 'ffgc_init', 20);
+add_action('init', function() {
+    global $ffgc_initialized;
+    // If not already initialized and Fluent Forms is active, try again
+    if (!$ffgc_initialized && ffgc_check_fluent_forms()) {
+        ffgc_init();
+    }
+}, 20);
 
 // Activation hook
 register_activation_hook(__FILE__, 'ffgc_activate');
 function ffgc_activate() {
-    if (!ffgc_check_fluent_forms()) {
+    // Check if Fluent Forms plugin is active
+    if (!is_plugin_active('fluentform/fluentform.php') && !is_plugin_active('fluentform-pro/fluentform-pro.php')) {
         deactivate_plugins(plugin_basename(__FILE__));
-        wp_die(__('Fluent Forms Gift Certificates requires Fluent Forms to be installed and activated.', 'fluentforms-gift-certificates'));
+        wp_die(
+            __('Fluent Forms Gift Certificates requires Fluent Forms to be installed and activated.', 'fluentforms-gift-certificates'),
+            __('Plugin Activation Error', 'fluentforms-gift-certificates'),
+            array('back_link' => true)
+        );
+    }
+    
+    // Check if Fluent Forms database tables exist
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'fluentform_forms';
+    $table_exists = $wpdb->get_var("SHOW TABLES LIKE '$table_name'") == $table_name;
+    
+    if (!$table_exists) {
+        deactivate_plugins(plugin_basename(__FILE__));
+        wp_die(
+            __('Fluent Forms Gift Certificates detected Fluent Forms but the database tables are not properly set up. Please deactivate and reactivate Fluent Forms first.', 'fluentforms-gift-certificates'),
+            __('Plugin Activation Error', 'fluentforms-gift-certificates'),
+            array('back_link' => true)
+        );
     }
     
     // Create database tables and default options

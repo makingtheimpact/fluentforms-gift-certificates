@@ -35,9 +35,7 @@ A comprehensive WordPress plugin that integrates with Fluent Forms to provide gi
 ## 🚀 Installation
 
 1. **Download the Plugin**
-   ```bash
-   git clone https://github.com/your-username/fluentforms-gift-certificates.git
-   ```
+   Download the latest release from https://github.com/makingtheimpact/fluentforms-gift-certificates
 
 2. **Upload to WordPress**
    - Upload the `fluentforms-gift-certificates` folder to `/wp-content/plugins/`

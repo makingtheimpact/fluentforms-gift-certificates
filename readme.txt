@@ -1,5 +1,5 @@
 === Fluent Forms Gift Certificates ===
-Contributors: your-username
+Contributors: makingtheimpact
 Tags: fluent-forms, gift-certificates, ecommerce, forms, email, certificates
 Requires at least: 5.0
 Tested up to: 6.4
@@ -151,4 +151,4 @@ For developers, this plugin includes:
 * Responsive CSS and JavaScript
 * WordPress coding standards compliance
 
-See the full documentation at: [GitHub Repository](https://github.com/your-username/fluentforms-gift-certificates) 
+See the full documentation at: [GitHub Repository](https://github.com/makingtheimpact/fluentforms-gift-certificates) 

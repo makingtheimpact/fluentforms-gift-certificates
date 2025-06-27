@@ -41,24 +41,34 @@ class FFGC_Forms {
         // This is a simplified logic - you might want to add a meta field to forms
         // to explicitly mark them as purchase or application forms
         
-        // For now, we'll check if the form has amount/price fields to determine type
-        $form = wpFluent()->table('fluentform_forms')->where('id', $form_id)->first();
-        
-        if (!$form) {
+        // Check if wpFluent function is available
+        if (!function_exists('wpFluent')) {
             return 'application';
         }
         
-        $form_fields = json_decode($form->form_fields, true);
-        
-        // Check if form has price/amount fields
-        foreach ($form_fields as $field) {
-            if (isset($field['element']) && in_array($field['element'], ['input_number', 'input_price', 'select'])) {
-                if (isset($field['attributes']['name']) && 
-                    (strpos($field['attributes']['name'], 'amount') !== false || 
-                     strpos($field['attributes']['name'], 'price') !== false)) {
-                    return 'purchase';
+        // For now, we'll check if the form has amount/price fields to determine type
+        try {
+            $form = wpFluent()->table('fluentform_forms')->where('id', $form_id)->first();
+            
+            if (!$form) {
+                return 'application';
+            }
+            
+            $form_fields = json_decode($form->form_fields, true);
+            
+            // Check if form has price/amount fields
+            foreach ($form_fields as $field) {
+                if (isset($field['element']) && in_array($field['element'], ['input_number', 'input_price', 'select'])) {
+                    if (isset($field['attributes']['name']) && 
+                        (strpos($field['attributes']['name'], 'amount') !== false || 
+                         strpos($field['attributes']['name'], 'price') !== false)) {
+                        return 'purchase';
+                    }
                 }
             }
+        } catch (Exception $e) {
+            // If there's an error, default to application
+            return 'application';
         }
         
         return 'application';

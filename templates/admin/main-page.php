@@ -19,7 +19,7 @@ if (!defined('ABSPATH')) {
                 <h3><?php _e('Total Certificates', 'fluentforms-gift-certificates'); ?></h3>
                 <div class="ffgc-stat-number">
                     <?php
-                    $total_certificates = wp_count_posts('ffgc_certificate');
+                    $total_certificates = wp_count_posts('ffgc_cert');
                     $publish_count = isset($total_certificates->publish) ? $total_certificates->publish : 0;
                     echo esc_html($publish_count);
                     ?>
@@ -31,7 +31,7 @@ if (!defined('ABSPATH')) {
                 <div class="ffgc-stat-number">
                     <?php
                     $active_certificates = get_posts(array(
-                        'post_type' => 'ffgc_certificate',
+                        'post_type' => 'ffgc_cert',
                         'posts_per_page' => -1,
                         'post_status' => 'publish',
                         'meta_query' => array(
@@ -53,7 +53,7 @@ if (!defined('ABSPATH')) {
                     <?php
                     $total_value = 0;
                     $certificates = get_posts(array(
-                        'post_type' => 'ffgc_certificate',
+                        'post_type' => 'ffgc_cert',
                         'posts_per_page' => -1,
                         'post_status' => 'publish'
                     ));
@@ -94,7 +94,7 @@ if (!defined('ABSPATH')) {
             <h2><?php _e('Quick Actions', 'fluentforms-gift-certificates'); ?></h2>
             
             <div class="ffgc-action-buttons">
-                <a href="<?php echo admin_url('post-new.php?post_type=ffgc_certificate'); ?>" class="button button-primary">
+                <a href="<?php echo admin_url('post-new.php?post_type=ffgc_cert'); ?>" class="button button-primary">
                     <?php _e('Create Certificate', 'fluentforms-gift-certificates'); ?>
                 </a>
                 
@@ -102,7 +102,7 @@ if (!defined('ABSPATH')) {
                     <?php _e('Create Design', 'fluentforms-gift-certificates'); ?>
                 </a>
                 
-                <a href="<?php echo admin_url('edit.php?post_type=ffgc_certificate'); ?>" class="button button-secondary">
+                <a href="<?php echo admin_url('edit.php?post_type=ffgc_cert'); ?>" class="button button-secondary">
                     <?php _e('View All Certificates', 'fluentforms-gift-certificates'); ?>
                 </a>
                 
@@ -126,7 +126,7 @@ if (!defined('ABSPATH')) {
             <div class="ffgc-activity-list">
                 <?php
                 $recent_certificates = get_posts(array(
-                    'post_type' => 'ffgc_certificate',
+                    'post_type' => 'ffgc_cert',
                     'posts_per_page' => 5,
                     'post_status' => 'publish',
                     'orderby' => 'date',

@@ -490,7 +490,7 @@ class FFGC_Forms {
             'post_title' => sprintf(__('Gift Certificate - %s', 'fluentforms-gift-certificates'), $code),
             'post_content' => $data['personal_message'],
             'post_status' => 'publish',
-            'post_type' => 'ffgc_certificate'
+            'post_type' => 'ffgc_cert'
         );
         
         $certificate_id = wp_insert_post($post_data);
@@ -520,7 +520,7 @@ class FFGC_Forms {
         do {
             $code = strtoupper(substr(md5(uniqid()), 0, 12));
             $existing = get_posts(array(
-                'post_type' => 'ffgc_certificate',
+                'post_type' => 'ffgc_cert',
                 'meta_query' => array(
                     array(
                         'key' => '_certificate_code',
@@ -540,7 +540,7 @@ class FFGC_Forms {
      */
     private function apply_gift_certificate($code, $form_id, $submission_id) {
         $certificate = get_posts(array(
-            'post_type' => 'ffgc_certificate',
+            'post_type' => 'ffgc_cert',
             'meta_query' => array(
                 array(
                     'key' => '_certificate_code',
@@ -631,7 +631,7 @@ class FFGC_Forms {
         }
         
         $certificate = get_posts(array(
-            'post_type' => 'ffgc_certificate',
+            'post_type' => 'ffgc_cert',
             'meta_query' => array(
                 array(
                     'key' => '_certificate_code',

@@ -210,7 +210,11 @@ class FFGC_Post_Types {
                         $value = floatval($value);
                         break;
                     case 'textarea':
-                        $value = wp_kses_post($value);
+                        if ($key === '_email_template') {
+                            $value = ffgc_sanitize_email_template($value);
+                        } else {
+                            $value = wp_kses_post($value);
+                        }
                         break;
                     default:
                         $value = sanitize_text_field($value);

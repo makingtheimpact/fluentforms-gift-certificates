@@ -56,3 +56,18 @@ if (!function_exists('ffgc_get_script_strings')) {
     }
 }
 
+if (!function_exists('ffgc_sanitize_email_template')) {
+    /**
+     * Sanitize email template HTML while allowing style tags.
+     *
+     * @param string $html Raw HTML from the editor.
+     * @return string Sanitized HTML.
+     */
+    function ffgc_sanitize_email_template($html) {
+        $allowed = wp_kses_allowed_html('post');
+        $allowed['style'] = array('type' => true);
+
+        return wp_kses($html, $allowed);
+    }
+}
+

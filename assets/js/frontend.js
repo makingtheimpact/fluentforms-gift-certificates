@@ -205,7 +205,8 @@ jQuery(document).ready(function($) {
             if (typeof wc_price !== 'undefined') {
                 return wc_price(amount);
             }
-            return '$' + parseFloat(amount).toFixed(2);
+            var symbol = (typeof ffgc_ajax !== 'undefined' && ffgc_ajax.currency_symbol) ? ffgc_ajax.currency_symbol : '$';
+            return symbol + parseFloat(amount).toFixed(2);
         }
     };
 

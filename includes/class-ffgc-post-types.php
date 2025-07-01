@@ -294,8 +294,25 @@ class FFGC_Post_Types {
     }
     
     private function generate_certificate_code() {
-        $prefix = 'GC';
-        $suffix = strtoupper(substr(md5(uniqid()), 0, 6));
-        return $prefix . '-' . $suffix;
+        do {
+            $prefix = 'GC';
+            $suffix = strtoupper(substr(bin2hex(random_bytes(6)), 0, 6));
+            $code   = $prefix . '-' . $suffix;
+
+            $existing = get_posts(array(
+                'post_type'      => 'ffgc_cert',
+                'fields'         => 'ids',
+                'meta_query'     => array(
+                    array(
+                        'key'     => '_certificate_code',
+                        'value'   => $code,
+                        'compare' => '=',
+                    ),
+                ),
+                'posts_per_page' => 1,
+            ));
+        } while (!empty($existing));
+
+        return $code;
     }
 } 

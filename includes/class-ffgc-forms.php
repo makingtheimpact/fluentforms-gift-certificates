@@ -39,10 +39,11 @@ class FFGC_Forms {
         add_action('wp_ajax_ffgc_get_usage_history', array($this, 'ajax_get_usage_history'));
         add_action('wp_ajax_nopriv_ffgc_get_usage_history', array($this, 'ajax_get_usage_history'));
         add_action('wp_ajax_ffgc_resend_email', array($this, 'ajax_resend_email'));
-        
+
         // Admin hooks
         add_action('admin_enqueue_scripts', array($this, 'admin_scripts'));
         add_action('wp_enqueue_scripts', array($this, 'frontend_scripts'));
+        add_action('save_post_ffgc_design', array($this, 'clear_design_cache'));
     }
     
     /**
@@ -200,18 +201,7 @@ class FFGC_Forms {
         $columns = $field['settings']['columns'] ?? 3;
         $show_info = $field['settings']['show_design_info'] ?? true;
         
-        $designs = get_posts(array(
-            'post_type' => 'ffgc_design',
-            'posts_per_page' => -1,
-            'post_status' => 'publish',
-            'meta_query' => array(
-                array(
-                    'key' => '_is_active',
-                    'value' => 'yes',
-                    'compare' => '='
-                )
-            )
-        ));
+        $designs = $this->get_active_design_data();
         
         echo '<div class="ffgc-design-field" data-field-id="' . esc_attr($field_id) . '">';
         echo '<input type="hidden" name="' . esc_attr($field_name) . '" id="' . esc_attr($field_id) . '" value="" ' . ($required ? 'required' : '') . ' />';
@@ -219,19 +209,18 @@ class FFGC_Forms {
         if ($display_type === 'grid') {
             echo '<div class="ffgc-design-grid" style="grid-template-columns: repeat(' . esc_attr($columns) . ', 1fr);">';
             foreach ($designs as $design) {
-                $image_id = get_post_meta($design->ID, '_design_image', true);
-                $image_url = wp_get_attachment_image_url($image_id, 'medium');
-                $min_amount = get_post_meta($design->ID, '_min_amount', true);
-                $max_amount = get_post_meta($design->ID, '_max_amount', true);
-                
-                echo '<div class="ffgc-design-option" data-design-id="' . esc_attr($design->ID) . '">';
+                $image_url = $design['image_url'];
+                $min_amount = $design['min_amount'];
+                $max_amount = $design['max_amount'];
+
+                echo '<div class="ffgc-design-option" data-design-id="' . esc_attr($design['id']) . '">';
                 if ($image_url) {
                     echo '<div class="ffgc-design-image">';
-                    echo '<img src="' . esc_url($image_url) . '" alt="' . esc_attr($design->post_title) . '" />';
+                    echo '<img src="' . esc_url($image_url) . '" alt="' . esc_attr($design['title']) . '" />';
                     echo '</div>';
                 }
                 echo '<div class="ffgc-design-info">';
-                echo '<h4>' . esc_html($design->post_title) . '</h4>';
+                echo '<h4>' . esc_html($design['title']) . '</h4>';
                 if ($show_info && ($min_amount || $max_amount)) {
                     echo '<p class="ffgc-design-range">';
                     if ($min_amount && $max_amount) {
@@ -252,7 +241,7 @@ class FFGC_Forms {
             echo '<select name="' . esc_attr($field_name) . '" id="' . esc_attr($field_id) . '" ' . ($required ? 'required' : '') . '>';
             echo '<option value="">' . __('Select a design', 'fluentforms-gift-certificates') . '</option>';
             foreach ($designs as $design) {
-                echo '<option value="' . esc_attr($design->ID) . '">' . esc_html($design->post_title) . '</option>';
+                echo '<option value="' . esc_attr($design['id']) . '">' . esc_html($design['title']) . '</option>';
             }
             echo '</select>';
         }
@@ -629,6 +618,63 @@ class FFGC_Forms {
         $vars['ffgc_nonce'] = wp_create_nonce('ffgc_nonce');
         return $vars;
     }
+
+    /**
+     * Get active design IDs, cached via transient
+     */
+    private function get_active_design_ids() {
+        $ids = get_transient('ffgc_active_design_ids');
+        if ($ids === false) {
+            $query = new WP_Query(array(
+                'post_type'   => 'ffgc_design',
+                'post_status' => 'publish',
+                'meta_query'  => array(
+                    array(
+                        'key'     => '_is_active',
+                        'value'   => 'yes',
+                        'compare' => '='
+                    )
+                ),
+                'fields'   => 'ids',
+                'nopaging' => true
+            ));
+            $ids = $query->posts;
+            set_transient('ffgc_active_design_ids', $ids, HOUR_IN_SECONDS);
+        }
+        return $ids;
+    }
+
+    /**
+     * Get active design data array cached via transient
+     */
+    private function get_active_design_data() {
+        $data = get_transient('ffgc_active_design_data');
+        if ($data === false) {
+            $data = array();
+            foreach ($this->get_active_design_ids() as $id) {
+                $post       = get_post($id);
+                $image_id   = get_post_meta($id, '_design_image', true);
+                $data[] = array(
+                    'id'          => $id,
+                    'title'       => $post->post_title,
+                    'description' => $post->post_content,
+                    'image_url'   => wp_get_attachment_image_url($image_id, 'medium'),
+                    'min_amount'  => get_post_meta($id, '_min_amount', true),
+                    'max_amount'  => get_post_meta($id, '_max_amount', true)
+                );
+            }
+            set_transient('ffgc_active_design_data', $data, HOUR_IN_SECONDS);
+        }
+        return $data;
+    }
+
+    /**
+     * Clear cached design IDs
+     */
+    public function clear_design_cache() {
+        delete_transient('ffgc_active_design_ids');
+        delete_transient('ffgc_active_design_data');
+    }
     
     /**
      * AJAX: Validate certificate
@@ -688,36 +734,8 @@ class FFGC_Forms {
     public function ajax_get_designs() {
         check_ajax_referer('ffgc_nonce', 'nonce');
         
-        $designs = get_posts(array(
-            'post_type' => 'ffgc_design',
-            'posts_per_page' => -1,
-            'post_status' => 'publish',
-            'meta_query' => array(
-                array(
-                    'key' => '_is_active',
-                    'value' => 'yes',
-                    'compare' => '='
-                )
-            )
-        ));
-        
-        $design_data = array();
-        foreach ($designs as $design) {
-            $image_id = get_post_meta($design->ID, '_design_image', true);
-            $image_url = wp_get_attachment_image_url($image_id, 'medium');
-            $min_amount = get_post_meta($design->ID, '_min_amount', true);
-            $max_amount = get_post_meta($design->ID, '_max_amount', true);
-            
-            $design_data[] = array(
-                'id' => $design->ID,
-                'title' => $design->post_title,
-                'description' => $design->post_content,
-                'image_url' => $image_url,
-                'min_amount' => $min_amount,
-                'max_amount' => $max_amount
-            );
-        }
-        
+        $design_data = $this->get_active_design_data();
+
         wp_send_json_success($design_data);
     }
     
@@ -740,7 +758,8 @@ class FFGC_Forms {
         
         $status = $is_active ? 'yes' : 'no';
         update_post_meta($design_id, '_is_active', $status);
-        
+        $this->clear_design_cache();
+
         wp_send_json_success('Design status updated successfully');
     }
     

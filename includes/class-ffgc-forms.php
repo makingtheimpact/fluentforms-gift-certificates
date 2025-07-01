@@ -497,8 +497,8 @@ class FFGC_Forms {
         
         if ($certificate_id) {
             update_post_meta($certificate_id, '_certificate_code', $code);
-            update_post_meta($certificate_id, '_amount', $data['amount']);
-            update_post_meta($certificate_id, '_balance', $data['amount']);
+            update_post_meta($certificate_id, '_certificate_amount', $data['amount']);
+            update_post_meta($certificate_id, '_certificate_balance', $data['amount']);
             update_post_meta($certificate_id, '_recipient_name', $data['recipient_name']);
             update_post_meta($certificate_id, '_recipient_email', $data['recipient_email']);
             update_post_meta($certificate_id, '_design_id', $data['design_id']);
@@ -556,7 +556,7 @@ class FFGC_Forms {
         }
         
         $certificate = $certificate[0];
-        $balance = get_post_meta($certificate->ID, '_balance', true);
+        $balance = get_post_meta($certificate->ID, '_certificate_balance', true);
         $status = get_post_meta($certificate->ID, '_status', true);
         $expiry_date = get_post_meta($certificate->ID, '_expiry_date', true);
         
@@ -574,7 +574,7 @@ class FFGC_Forms {
         $amount_to_apply = $balance;
         
         // Update balance
-        update_post_meta($certificate->ID, '_balance', $balance - $amount_to_apply);
+        update_post_meta($certificate->ID, '_certificate_balance', $balance - $amount_to_apply);
         
         // Log usage
         $this->log_certificate_usage($certificate->ID, $form_id, $submission_id, $amount_to_apply);
@@ -647,7 +647,7 @@ class FFGC_Forms {
         }
         
         $certificate = $certificate[0];
-        $balance = get_post_meta($certificate->ID, '_balance', true);
+        $balance = get_post_meta($certificate->ID, '_certificate_balance', true);
         $status = get_post_meta($certificate->ID, '_status', true);
         $expiry_date = get_post_meta($certificate->ID, '_expiry_date', true);
         
@@ -817,8 +817,8 @@ class FFGC_Forms {
      */
     public function admin_scripts($hook) {
         if (strpos($hook, 'fluent_forms') !== false) {
-            wp_enqueue_script('ffgc-admin', plugin_dir_url(__FILE__) . '../assets/js/admin.js', array('jquery'), '1.0.0', true);
-            wp_enqueue_style('ffgc-admin', plugin_dir_url(__FILE__) . '../assets/css/admin.css', array(), '1.0.0');
+            wp_enqueue_script('ffgc-admin', plugin_dir_url(__FILE__) . '../assets/js/admin.js', array('jquery'), FFGC_VERSION, true);
+            wp_enqueue_style('ffgc-admin', plugin_dir_url(__FILE__) . '../assets/css/admin.css', array(), FFGC_VERSION);
         }
     }
     
@@ -826,8 +826,8 @@ class FFGC_Forms {
      * Enqueue frontend scripts
      */
     public function frontend_scripts() {
-        wp_enqueue_script('ffgc-frontend', plugin_dir_url(__FILE__) . '../assets/js/frontend.js', array('jquery'), '1.0.0', true);
-        wp_enqueue_style('ffgc-frontend', plugin_dir_url(__FILE__) . '../assets/css/frontend.css', array(), '1.0.0');
+        wp_enqueue_script('ffgc-frontend', plugin_dir_url(__FILE__) . '../assets/js/frontend.js', array('jquery'), FFGC_VERSION, true);
+        wp_enqueue_style('ffgc-frontend', plugin_dir_url(__FILE__) . '../assets/css/frontend.css', array(), FFGC_VERSION);
         
         wp_localize_script('ffgc-frontend', 'ffgc_ajax', array(
             'ajax_url' => admin_url('admin-ajax.php'),

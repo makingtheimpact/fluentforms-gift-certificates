@@ -178,8 +178,8 @@ class FFGC_Core {
         
         $certificate = $certificate[0];
         $status = get_post_meta($certificate->ID, '_status', true);
-        $balance = get_post_meta($certificate->ID, '_balance', true);
-        $amount = get_post_meta($certificate->ID, '_amount', true);
+        $balance = get_post_meta($certificate->ID, '_certificate_balance', true);
+        $amount = get_post_meta($certificate->ID, '_certificate_amount', true);
         
         if ($status !== 'active') {
             wp_send_json_error(__('This gift certificate is not active.', 'fluentforms-gift-certificates'));

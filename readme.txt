@@ -4,7 +4,7 @@ Tags: fluent-forms, gift-certificates, ecommerce, forms, email, certificates
 Requires at least: 5.0
 Tested up to: 6.4
 Requires PHP: 7.4
-Stable tag: 1.0.0
+Stable tag: 1.0.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -124,6 +124,10 @@ Yes! Simply enable the forms you want to use in the plugin settings. Forms with 
 
 == Changelog ==
 
+= 1.0.1 =
+* Unified certificate meta keys
+* Added migration for existing data
+
 = 1.0.0 =
 * Initial release
 * Basic gift certificate functionality
@@ -136,6 +140,9 @@ Yes! Simply enable the forms you want to use in the plugin settings. Forms with 
 * Settings configuration
 
 == Upgrade Notice ==
+
+= 1.0.1 =
+Recommended upgrade to unify certificate meta keys.
 
 = 1.0.0 =
 Initial release of Fluent Forms Gift Certificates plugin.

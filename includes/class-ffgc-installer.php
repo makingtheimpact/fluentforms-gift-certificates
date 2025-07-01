@@ -237,6 +237,29 @@ class FFGC_Installer {
                 ));
             }
         }
+
+        // Migrate meta keys for certificates
+        if (version_compare($current_version, '1.0.1', '<')) {
+            $certificates = get_posts(array(
+                'post_type' => 'ffgc_certificate',
+                'posts_per_page' => -1,
+                'post_status' => 'any'
+            ));
+
+            foreach ($certificates as $certificate) {
+                $amount = get_post_meta($certificate->ID, '_amount', true);
+                if ($amount !== '') {
+                    update_post_meta($certificate->ID, '_certificate_amount', $amount);
+                    delete_post_meta($certificate->ID, '_amount');
+                }
+
+                $balance = get_post_meta($certificate->ID, '_balance', true);
+                if ($balance !== '') {
+                    update_post_meta($certificate->ID, '_certificate_balance', $balance);
+                    delete_post_meta($certificate->ID, '_balance');
+                }
+            }
+        }
         
         // Update version
         update_option('ffgc_version', FFGC_VERSION);

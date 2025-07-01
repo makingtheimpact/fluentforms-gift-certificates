@@ -28,6 +28,17 @@ class FFGC_Forms {
         add_action('wp_ajax_ffgc_toggle_design_status', array($this, 'ajax_toggle_design_status'));
         add_action('wp_ajax_ffgc_update_certificate_status', array($this, 'ajax_update_certificate_status'));
         add_action('wp_ajax_ffgc_bulk_action', array($this, 'ajax_bulk_action'));
+
+        // New AJAX handlers
+        add_action('wp_ajax_ffgc_purchase_certificate', array($this, 'ajax_purchase_certificate'));
+        add_action('wp_ajax_nopriv_ffgc_purchase_certificate', array($this, 'ajax_purchase_certificate'));
+        add_action('wp_ajax_ffgc_get_design_details', array($this, 'ajax_get_design_details'));
+        add_action('wp_ajax_nopriv_ffgc_get_design_details', array($this, 'ajax_get_design_details'));
+        add_action('wp_ajax_ffgc_preview_design', array($this, 'ajax_preview_design'));
+        add_action('wp_ajax_nopriv_ffgc_preview_design', array($this, 'ajax_preview_design'));
+        add_action('wp_ajax_ffgc_get_usage_history', array($this, 'ajax_get_usage_history'));
+        add_action('wp_ajax_nopriv_ffgc_get_usage_history', array($this, 'ajax_get_usage_history'));
+        add_action('wp_ajax_ffgc_resend_email', array($this, 'ajax_resend_email'));
         
         // Admin hooks
         add_action('admin_enqueue_scripts', array($this, 'admin_scripts'));
@@ -810,6 +821,169 @@ class FFGC_Forms {
             'message' => sprintf('%d certificate(s) updated successfully', $updated_count),
             'updated_count' => $updated_count
         ));
+    }
+
+    /**
+     * AJAX: Purchase certificate
+     */
+    public function ajax_purchase_certificate() {
+        check_ajax_referer('ffgc_nonce', 'nonce');
+
+        $amount           = floatval($_POST['amount'] ?? 0);
+        $recipient_name   = sanitize_text_field($_POST['recipient_name'] ?? '');
+        $recipient_email  = sanitize_email($_POST['recipient_email'] ?? '');
+        $personal_message = sanitize_textarea_field($_POST['personal_message'] ?? '');
+        $design_id        = intval($_POST['design_id'] ?? 0);
+
+        if ($amount <= 0 || empty($recipient_name) || empty($recipient_email)) {
+            wp_send_json_error(__('Invalid purchase details.', 'fluentforms-gift-certificates'));
+        }
+
+        if ($design_id) {
+            $min = floatval(get_post_meta($design_id, '_min_amount', true));
+            $max = floatval(get_post_meta($design_id, '_max_amount', true));
+            if ($min && $amount < $min) {
+                wp_send_json_error(sprintf(__('Amount must be at least %s', 'fluentforms-gift-certificates'), $min));
+            }
+            if ($max && $amount > $max) {
+                wp_send_json_error(sprintf(__('Amount cannot exceed %s', 'fluentforms-gift-certificates'), $max));
+            }
+        }
+
+        $certificate_id = $this->create_gift_certificate(array(
+            'amount'          => $amount,
+            'recipient_name'  => $recipient_name,
+            'recipient_email' => $recipient_email,
+            'personal_message'=> $personal_message,
+            'design_id'       => $design_id,
+            'submission_id'   => 0
+        ));
+
+        if ($certificate_id) {
+            $this->send_gift_certificate_email($certificate_id);
+            wp_send_json_success(__('Gift certificate purchased successfully.', 'fluentforms-gift-certificates'));
+        }
+
+        wp_send_json_error(__('Failed to create gift certificate.', 'fluentforms-gift-certificates'));
+    }
+
+    /**
+     * AJAX: Get design details
+     */
+    public function ajax_get_design_details() {
+        check_ajax_referer('ffgc_nonce', 'nonce');
+
+        $design_id = intval($_POST['design_id'] ?? 0);
+        if (!$design_id) {
+            wp_send_json_error('');
+        }
+
+        $min = get_post_meta($design_id, '_min_amount', true);
+        $max = get_post_meta($design_id, '_max_amount', true);
+
+        wp_send_json_success(array(
+            'min_amount' => $min ?: '',
+            'max_amount' => $max ?: ''
+        ));
+    }
+
+    /**
+     * AJAX: Preview design
+     */
+    public function ajax_preview_design() {
+        check_ajax_referer('ffgc_nonce', 'nonce');
+
+        $design_id = intval($_POST['design_id'] ?? 0);
+        if (!$design_id) {
+            wp_send_json_error('');
+        }
+
+        $image_id  = get_post_meta($design_id, '_design_image', true);
+        $image_url = wp_get_attachment_image_url($image_id, 'large');
+        $title     = get_the_title($design_id);
+        $content   = get_post_field('post_content', $design_id);
+
+        $html  = '';
+        if ($image_url) {
+            $html .= '<img src="' . esc_url($image_url) . '" alt="' . esc_attr($title) . '" />';
+        }
+        if ($content) {
+            $html .= '<p>' . esc_html($content) . '</p>';
+        }
+
+        wp_send_json_success($html);
+    }
+
+    /**
+     * AJAX: Get usage history
+     */
+    public function ajax_get_usage_history() {
+        check_ajax_referer('ffgc_nonce', 'nonce');
+
+        $code = sanitize_text_field($_POST['code'] ?? '');
+        if (!$code) {
+            wp_send_json_error('');
+        }
+
+        $certificate = get_posts(array(
+            'post_type'  => 'ffgc_certificate',
+            'meta_query' => array(
+                array(
+                    'key'   => '_certificate_code',
+                    'value' => $code,
+                    'compare' => '='
+                )
+            ),
+            'posts_per_page' => 1
+        ));
+
+        if (empty($certificate)) {
+            wp_send_json_error('');
+        }
+
+        $certificate   = $certificate[0];
+        $usage_log     = get_post_meta($certificate->ID, '_usage_log', true);
+        if (!is_array($usage_log)) {
+            wp_send_json_success(array());
+        }
+
+        $history = array();
+        foreach ($usage_log as $entry) {
+            $form_title = '';
+            if (!empty($entry['form_id'])) {
+                $form = get_post($entry['form_id']);
+                if ($form) {
+                    $form_title = $form->post_title;
+                }
+            }
+            $history[] = array(
+                'date'       => date_i18n(get_option('date_format'), strtotime($entry['date'])),
+                'amount'     => number_format($entry['amount_used'], 2),
+                'form_title' => $form_title
+            );
+        }
+
+        wp_send_json_success($history);
+    }
+
+    /**
+     * AJAX: Resend certificate email
+     */
+    public function ajax_resend_email() {
+        check_ajax_referer('ffgc_nonce', 'nonce');
+
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error('');
+        }
+
+        $certificate_id = intval($_POST['certificate_id'] ?? 0);
+        if (!$certificate_id) {
+            wp_send_json_error('');
+        }
+
+        $this->send_gift_certificate_email($certificate_id);
+
+        wp_send_json_success(true);
     }
     
     /**

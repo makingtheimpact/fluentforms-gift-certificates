@@ -127,6 +127,7 @@ class FFGC_Core {
             'ajax_url' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('ffgc_nonce')
         ));
+        wp_localize_script('ffgc-admin', 'ffgc_strings', ffgc_get_script_strings());
     }
     
     public function frontend_scripts() {
@@ -149,6 +150,7 @@ class FFGC_Core {
             'ajax_url' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('ffgc_nonce')
         ));
+        wp_localize_script('ffgc-frontend', 'ffgc_strings', ffgc_get_script_strings());
     }
     
     public function ajax_check_balance() {

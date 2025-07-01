@@ -64,7 +64,7 @@ jQuery(document).ready(function($) {
                 var code = $input.val().trim();
 
                 if (!code) {
-                    FFGC.showBalanceResult($field, 'error', 'Please enter a certificate code');
+                    FFGC.showBalanceResult($field, 'error', ffgc_strings.enter_code);
                     return;
                 }
 
@@ -78,7 +78,7 @@ jQuery(document).ready(function($) {
             $(document).on('click', '#ffgc_check_balance', function() {
                 var code = $('#ffgc_certificate_code').val().trim();
                 if (!code) {
-                    FFGC.showBalanceResult($('#ffgc_balance_result'), 'error', 'Please enter a certificate code');
+                    FFGC.showBalanceResult($('#ffgc_balance_result'), 'error', ffgc_strings.enter_code);
                     return;
                 }
                 FFGC.checkBalanceLegacy(code);
@@ -91,7 +91,7 @@ jQuery(document).ready(function($) {
             var $result = $field.find('.ffgc-balance-result');
 
             // Show loading state
-            $btn.prop('disabled', true).text('Checking...');
+            $btn.prop('disabled', true).text(ffgc_strings.checking);
             $result.hide();
 
             $.ajax({
@@ -110,10 +110,10 @@ jQuery(document).ready(function($) {
                     }
                 },
                 error: function() {
-                    FFGC.showBalanceResult($field, 'error', 'An error occurred while checking the certificate');
+                    FFGC.showBalanceResult($field, 'error', ffgc_strings.checking_error);
                 },
                 complete: function() {
-                    $btn.prop('disabled', false).text('Check Balance');
+                    $btn.prop('disabled', false).text(ffgc_strings.check_balance);
                 }
             });
         },
@@ -123,7 +123,7 @@ jQuery(document).ready(function($) {
             var $btn = $('#ffgc_check_balance');
             var $result = $('#ffgc_balance_result');
 
-            $btn.prop('disabled', true).text('Checking...');
+            $btn.prop('disabled', true).text(ffgc_strings.checking);
             $result.hide();
 
             $.ajax({
@@ -142,10 +142,10 @@ jQuery(document).ready(function($) {
                     }
                 },
                 error: function() {
-                    FFGC.showBalanceResult($result, 'error', 'An error occurred while checking the certificate');
+                    FFGC.showBalanceResult($result, 'error', ffgc_strings.checking_error);
                 },
                 complete: function() {
-                    $btn.prop('disabled', false).text('Check Balance');
+                    $btn.prop('disabled', false).text(ffgc_strings.check_balance);
                 }
             });
         },
@@ -176,7 +176,7 @@ jQuery(document).ready(function($) {
                     }
                 },
                 error: function() {
-                    FFGC.showRedemptionResult($field, 'error', 'An error occurred while applying the certificate');
+                    FFGC.showRedemptionResult($field, 'error', ffgc_strings.apply_error);
                 }
             });
         },
@@ -234,8 +234,8 @@ jQuery(document).ready(function($) {
             template: function(field) {
                 return '<div class="ffgc-redemption-field" data-field-id="' + field.attributes.name + '">' +
                        '<div class="ffgc-code-input-group">' +
-                       '<input type="text" name="' + field.attributes.name + '" class="ffgc-certificate-code" placeholder="Enter gift certificate code" />' +
-                       '<button type="button" class="ffgc-check-balance-btn">Check Balance</button>' +
+                       '<input type="text" name="' + field.attributes.name + '" class="ffgc-certificate-code" placeholder="' + ffgc_strings.enter_gift_code + '" />' +
+                       '<button type="button" class="ffgc-check-balance-btn">' + ffgc_strings.check_balance + '</button>' +
                        '</div>' +
                        '<div class="ffgc-balance-result" style="display: none;"></div>' +
                        '<div class="ffgc-redemption-result" style="display: none;"></div>' +
@@ -292,11 +292,11 @@ jQuery(document).ready(function($) {
         var historyDiv = $('#ffgc-usage-history');
         
         if (!code) {
-            resultDiv.html('<div class="ffgc-error">Please enter a gift certificate code.</div>').show();
+            resultDiv.html('<div class="ffgc-error">' + ffgc_strings.enter_code + '.</div>').show();
             return;
         }
         
-        resultDiv.html('<div class="ffgc-loading">Checking balance...</div>').show();
+        resultDiv.html('<div class="ffgc-loading">' + ffgc_strings.checking_balance + '</div>').show();
         historyDiv.hide();
         
         $.ajax({
@@ -327,7 +327,7 @@ jQuery(document).ready(function($) {
                 }
             },
             error: function() {
-                resultDiv.html('<div class="ffgc-error">An error occurred. Please try again.</div>');
+                resultDiv.html('<div class="ffgc-error">' + ffgc_strings.error_occurred + '</div>');
             }
         });
     });
@@ -339,7 +339,7 @@ jQuery(document).ready(function($) {
         var formData = $(this).serialize();
         var resultDiv = $('#ffgc-purchase-result');
         
-        resultDiv.html('<div class="ffgc-loading">Processing...</div>').show();
+        resultDiv.html('<div class="ffgc-loading">' + ffgc_strings.processing + '</div>').show();
         
         $.ajax({
             url: ffgc_ajax.ajax_url,
@@ -354,7 +354,7 @@ jQuery(document).ready(function($) {
                 }
             },
             error: function() {
-                resultDiv.html('<div class="ffgc-error">An error occurred. Please try again.</div>');
+                resultDiv.html('<div class="ffgc-error">' + ffgc_strings.error_occurred + '</div>');
             }
         });
     });
@@ -520,9 +520,9 @@ jQuery(document).ready(function($) {
         
         if (navigator.clipboard) {
             navigator.clipboard.writeText(code).then(function() {
-                button.text('Copied!');
+                button.text(ffgc_strings.copied);
                 setTimeout(function() {
-                    button.text('Copy Code');
+                    button.text(ffgc_strings.copy_code);
                 }, 2000);
             });
         } else {
@@ -534,9 +534,9 @@ jQuery(document).ready(function($) {
             document.execCommand('copy');
             document.body.removeChild(textArea);
             
-            button.text('Copied!');
+            button.text(ffgc_strings.copied);
             setTimeout(function() {
-                button.text('Copy Code');
+                button.text(ffgc_strings.copy_code);
             }, 2000);
         }
     });

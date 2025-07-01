@@ -1013,6 +1013,7 @@ class FFGC_Forms {
         if (strpos($hook, 'fluent_forms') !== false) {
             wp_enqueue_script('ffgc-admin', plugin_dir_url(__FILE__) . '../assets/js/admin.js', array('jquery'), FFGC_VERSION, true);
             wp_enqueue_style('ffgc-admin', plugin_dir_url(__FILE__) . '../assets/css/admin.css', array(), FFGC_VERSION);
+            wp_localize_script('ffgc-admin', 'ffgc_strings', ffgc_get_script_strings());
         }
     }
     
@@ -1022,13 +1023,14 @@ class FFGC_Forms {
     public function frontend_scripts() {
         wp_enqueue_script('ffgc-frontend', plugin_dir_url(__FILE__) . '../assets/js/frontend.js', array('jquery'), FFGC_VERSION, true);
         wp_enqueue_style('ffgc-frontend', plugin_dir_url(__FILE__) . '../assets/css/frontend.css', array(), FFGC_VERSION);
-        
+
         $currency = get_option('ffgc_currency', 'USD');
         wp_localize_script('ffgc-frontend', 'ffgc_ajax', array(
             'ajax_url' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('ffgc_nonce'),
             'currency_symbol' => ffgc_get_currency_symbol($currency)
         ));
+        wp_localize_script('ffgc-frontend', 'ffgc_strings', ffgc_get_script_strings());
     }
     
     /**

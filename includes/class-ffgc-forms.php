@@ -529,17 +529,18 @@ class FFGC_Forms {
      */
     private function generate_unique_code() {
         do {
-            $code = strtoupper(substr(md5(uniqid()), 0, 12));
+            $code = strtoupper(bin2hex(random_bytes(6)));
             $existing = get_posts(array(
-                'post_type' => 'ffgc_cert',
-                'meta_query' => array(
+                'post_type'      => 'ffgc_cert',
+                'fields'         => 'ids',
+                'meta_query'     => array(
                     array(
-                        'key' => '_certificate_code',
-                        'value' => $code,
-                        'compare' => '='
-                    )
+                        'key'     => '_certificate_code',
+                        'value'   => $code,
+                        'compare' => '=',
+                    ),
                 ),
-                'posts_per_page' => 1
+                'posts_per_page' => 1,
             ));
         } while (!empty($existing));
         

@@ -36,7 +36,7 @@ jQuery(document).ready(function($) {
                         return '<div class="ffgc-design-field" data-field-id="' + field.attributes.name + '">' +
                                '<input type="hidden" name="' + field.attributes.name + '" value="' + (field.attributes.value || '') + '" ' + (field.attributes.required ? 'required' : '') + ' />' +
                                '<div class="ffgc-design-grid" style="grid-template-columns: repeat(' + (field.settings.columns || 3) + ', 1fr);">' +
-                               '<div class="ffgc-loading-designs">Loading designs...</div>' +
+                               '<div class="ffgc-loading-designs">' + ffgc_strings.loading_designs + '</div>' +
                                '</div>' +
                                '</div>';
                     },
@@ -72,10 +72,10 @@ jQuery(document).ready(function($) {
                         return '<div class="ffgc-redemption-field" data-field-id="' + field.attributes.name + '">' +
                                '<div class="ffgc-code-input-group">' +
                                '<input type="text" name="' + field.attributes.name + '" value="' + (field.attributes.value || '') + '" ' +
-                               'placeholder="' + (field.attributes.placeholder || 'Enter gift certificate code') + '" ' +
+                               'placeholder="' + (field.attributes.placeholder || ffgc_strings.enter_gift_code) + '" ' +
                                (field.attributes.required ? 'required' : '') + ' class="ffgc-certificate-code" ' +
                                'data-auto-apply="' + (field.settings.auto_apply ? 'true' : 'false') + '" />' +
-                               (field.settings.show_balance_check !== false ? '<button type="button" class="ffgc-check-balance-btn">Check Balance</button>' : '') +
+                               (field.settings.show_balance_check !== false ? '<button type="button" class="ffgc-check-balance-btn">' + ffgc_strings.check_balance + '</button>' : '') +
                                '</div>' +
                                '<div class="ffgc-balance-result" style="display: none;"></div>' +
                                '<div class="ffgc-redemption-result" style="display: none;"></div>' +
@@ -165,9 +165,9 @@ jQuery(document).ready(function($) {
                 var $preview = $button.siblings('.ffgc-image-preview');
 
                 var frame = wp.media({
-                    title: 'Select Design Image',
+                    title: ffgc_strings.select_design_image,
                     button: {
-                        text: 'Use this image'
+                        text: ffgc_strings.use_this_image
                     },
                     multiple: false
                 });
@@ -199,17 +199,17 @@ jQuery(document).ready(function($) {
                     success: function(response) {
                         if (response.success) {
                             // Show success message
-                            FFGC_Admin.showMessage('Design status updated successfully', 'success');
+                            FFGC_Admin.showMessage(ffgc_strings.design_status_updated, 'success');
                         } else {
                             // Revert checkbox state
                             $checkbox.prop('checked', !isActive);
-                            FFGC_Admin.showMessage('Failed to update design status', 'error');
+                            FFGC_Admin.showMessage(ffgc_strings.failed_update_design, 'error');
                         }
                     },
                     error: function() {
                         // Revert checkbox state
                         $checkbox.prop('checked', !isActive);
-                        FFGC_Admin.showMessage('An error occurred', 'error');
+                        FFGC_Admin.showMessage(ffgc_strings.error_occurred, 'error');
                     }
                 });
             });
@@ -234,13 +234,13 @@ jQuery(document).ready(function($) {
                     },
                     success: function(response) {
                         if (response.success) {
-                            FFGC_Admin.showMessage('Certificate status updated successfully', 'success');
+                            FFGC_Admin.showMessage(ffgc_strings.certificate_status_updated, 'success');
                         } else {
-                            FFGC_Admin.showMessage('Failed to update certificate status', 'error');
+                            FFGC_Admin.showMessage(ffgc_strings.failed_update_certificate, 'error');
                         }
                     },
                     error: function() {
-                        FFGC_Admin.showMessage('An error occurred', 'error');
+                        FFGC_Admin.showMessage(ffgc_strings.error_occurred, 'error');
                     }
                 });
             });
@@ -255,11 +255,11 @@ jQuery(document).ready(function($) {
                 }).get();
 
                 if (selectedCertificates.length === 0) {
-                    FFGC_Admin.showMessage('Please select certificates to perform this action', 'warning');
+                    FFGC_Admin.showMessage(ffgc_strings.select_certificates, 'warning');
                     return;
                 }
 
-                if (confirm('Are you sure you want to perform this action on ' + selectedCertificates.length + ' certificate(s)?')) {
+                if (confirm(ffgc_strings.confirm_bulk_action.replace('%d', selectedCertificates.length))) {
                     $.ajax({
                         url: ffgc_ajax.ajax_url,
                         type: 'POST',
@@ -271,14 +271,14 @@ jQuery(document).ready(function($) {
                         },
                         success: function(response) {
                             if (response.success) {
-                                FFGC_Admin.showMessage('Bulk action completed successfully', 'success');
+                                FFGC_Admin.showMessage(ffgc_strings.bulk_action_completed, 'success');
                                 location.reload();
                             } else {
-                                FFGC_Admin.showMessage('Failed to perform bulk action', 'error');
+                                FFGC_Admin.showMessage(ffgc_strings.failed_bulk_action, 'error');
                             }
                         },
                         error: function() {
-                            FFGC_Admin.showMessage('An error occurred', 'error');
+                            FFGC_Admin.showMessage(ffgc_strings.error_occurred, 'error');
                         }
                     });
                 }

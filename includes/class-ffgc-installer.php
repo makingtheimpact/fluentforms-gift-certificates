@@ -260,6 +260,42 @@ class FFGC_Installer {
                 }
             }
         }
+
+        // Migrate usage logs from post meta to custom table
+        if (version_compare($current_version, '1.0.2', '<')) {
+            global $wpdb;
+            $table = $wpdb->prefix . 'ffgc_usage_log';
+
+            $certificates = get_posts(array(
+                'post_type'      => 'ffgc_cert',
+                'posts_per_page' => -1,
+                'post_status'    => 'any',
+            ));
+
+            foreach ($certificates as $certificate) {
+                $logs = get_post_meta($certificate->ID, '_usage_log', true);
+                if (!is_array($logs)) {
+                    continue;
+                }
+
+                foreach ($logs as $log) {
+                    $wpdb->insert(
+                        $table,
+                        array(
+                            'certificate_id' => $certificate->ID,
+                            'form_id'        => intval($log['form_id'] ?? 0),
+                            'submission_id'  => intval($log['submission_id'] ?? 0),
+                            'amount_used'    => floatval($log['amount_used'] ?? 0),
+                            'order_total'    => floatval($log['order_total'] ?? 0),
+                            'created_at'     => isset($log['date']) ? $log['date'] : current_time('mysql'),
+                        ),
+                        array('%d','%d','%d','%f','%f','%s')
+                    );
+                }
+
+                delete_post_meta($certificate->ID, '_usage_log');
+            }
+        }
         
         // Update version
         update_option('ffgc_version', FFGC_VERSION);

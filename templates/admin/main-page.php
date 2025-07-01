@@ -30,19 +30,20 @@ if (!defined('ABSPATH')) {
                 <h3><?php _e('Active Certificates', 'fluentforms-gift-certificates'); ?></h3>
                 <div class="ffgc-stat-number">
                     <?php
-                    $active_certificates = get_posts(array(
-                        'post_type' => 'ffgc_cert',
-                        'posts_per_page' => -1,
-                        'post_status' => 'publish',
-                        'meta_query' => array(
+                    $active_query = new WP_Query(array(
+                        'post_type'      => 'ffgc_cert',
+                        'post_status'    => 'publish',
+                        'meta_query'     => array(
                             array(
-                                'key' => '_status',
-                                'value' => 'active',
+                                'key'     => '_status',
+                                'value'   => 'active',
                                 'compare' => '='
                             )
-                        )
+                        ),
+                        'fields'         => 'ids',
+                        'nopaging'       => true
                     ));
-                    echo esc_html(count($active_certificates));
+                    echo esc_html($active_query->found_posts);
                     ?>
                 </div>
             </div>
@@ -52,14 +53,15 @@ if (!defined('ABSPATH')) {
                 <div class="ffgc-stat-number">
                     <?php
                     $total_value = 0;
-                    $certificates = get_posts(array(
-                        'post_type' => 'ffgc_cert',
-                        'posts_per_page' => -1,
-                        'post_status' => 'publish'
+                    $value_query = new WP_Query(array(
+                        'post_type'   => 'ffgc_cert',
+                        'post_status' => 'publish',
+                        'fields'      => 'ids',
+                        'nopaging'    => true
                     ));
-                    
-                    foreach ($certificates as $certificate) {
-                        $amount = get_post_meta($certificate->ID, '_certificate_amount', true);
+
+                    foreach ($value_query->posts as $cert_id) {
+                        $amount = get_post_meta($cert_id, '_certificate_amount', true);
                         $total_value += floatval($amount);
                     }
                     
@@ -72,19 +74,20 @@ if (!defined('ABSPATH')) {
                 <h3><?php _e('Active Designs', 'fluentforms-gift-certificates'); ?></h3>
                 <div class="ffgc-stat-number">
                     <?php
-                    $active_designs = get_posts(array(
-                        'post_type' => 'ffgc_design',
-                        'posts_per_page' => -1,
+                    $design_query = new WP_Query(array(
+                        'post_type'   => 'ffgc_design',
                         'post_status' => 'publish',
-                        'meta_query' => array(
+                        'meta_query'  => array(
                             array(
-                                'key' => '_is_active',
-                                'value' => 'yes',
+                                'key'     => '_is_active',
+                                'value'   => 'yes',
                                 'compare' => '='
                             )
-                        )
+                        ),
+                        'fields'     => 'ids',
+                        'nopaging'   => true
                     ));
-                    echo esc_html(count($active_designs));
+                    echo esc_html($design_query->found_posts);
                     ?>
                 </div>
             </div>

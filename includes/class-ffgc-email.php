@@ -15,7 +15,14 @@ class FFGC_Email {
         add_filter('wp_mail_content_type', array($this, 'set_html_content_type'));
     }
     
-    public function send_gift_certificate($certificate_id) {
+    /**
+     * Send the gift certificate email to the recipient
+     *
+     * @param int $certificate_id The ID of the certificate post
+     *
+     * @return bool Whether the email was successfully sent
+     */
+    public function send_gift_certificate_email($certificate_id) {
         $certificate = get_post($certificate_id);
         
         if (!$certificate || $certificate->post_type !== 'ffgc_cert') {

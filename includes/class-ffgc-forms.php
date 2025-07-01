@@ -597,19 +597,8 @@ class FFGC_Forms {
      * Log certificate usage
      */
     private function log_certificate_usage($certificate_id, $form_id, $submission_id, $amount_used) {
-        $usage_log = get_post_meta($certificate_id, '_usage_log', true);
-        if (!is_array($usage_log)) {
-            $usage_log = array();
-        }
-        
-        $usage_log[] = array(
-            'date' => current_time('mysql'),
-            'form_id' => $form_id,
-            'submission_id' => $submission_id,
-            'amount_used' => $amount_used
-        );
-        
-        update_post_meta($certificate_id, '_usage_log', $usage_log);
+        // Insert into the dedicated usage log table
+        $this->add_usage_log($certificate_id, $form_id, $submission_id, $amount_used);
     }
     
     /**
@@ -618,6 +607,65 @@ class FFGC_Forms {
     private function send_gift_certificate_email($certificate_id) {
         $email_handler = new FFGC_Email();
         $email_handler->send_gift_certificate_email($certificate_id);
+    }
+
+    /**
+     * Insert a usage log entry
+     */
+    private function add_usage_log($certificate_id, $form_id, $submission_id, $amount_used, $order_total = 0) {
+        global $wpdb;
+        $table = $wpdb->prefix . 'ffgc_usage_log';
+
+        $wpdb->insert(
+            $table,
+            array(
+                'certificate_id' => $certificate_id,
+                'form_id'        => $form_id,
+                'submission_id'  => $submission_id,
+                'amount_used'    => $amount_used,
+                'order_total'    => $order_total,
+                'created_at'     => current_time('mysql'),
+            ),
+            array('%d', '%d', '%d', '%f', '%f', '%s')
+        );
+    }
+
+    /**
+     * Retrieve usage log entries for a certificate
+     */
+    private function get_usage_logs($certificate_id) {
+        global $wpdb;
+        $table = $wpdb->prefix . 'ffgc_usage_log';
+
+        $rows = $wpdb->get_results(
+            $wpdb->prepare("SELECT * FROM $table WHERE certificate_id = %d ORDER BY created_at ASC", $certificate_id),
+            ARRAY_A
+        );
+
+        if ($rows) {
+            return array_map(function($row) {
+                return array(
+                    'date'         => $row['created_at'],
+                    'form_id'      => intval($row['form_id']),
+                    'submission_id'=> intval($row['submission_id']),
+                    'amount_used'  => floatval($row['amount_used']),
+                    'order_total'  => floatval($row['order_total'])
+                );
+            }, $rows);
+        }
+
+        // Fallback to old post meta logs if no rows found
+        $meta_log = get_post_meta($certificate_id, '_usage_log', true);
+        return is_array($meta_log) ? $meta_log : array();
+    }
+
+    /**
+     * Delete usage logs for a certificate
+     */
+    private function delete_usage_logs($certificate_id) {
+        global $wpdb;
+        $table = $wpdb->prefix . 'ffgc_usage_log';
+        $wpdb->delete($table, array('certificate_id' => $certificate_id), array('%d'));
     }
     
     /**
@@ -942,7 +990,7 @@ class FFGC_Forms {
         }
 
         $certificate   = $certificate[0];
-        $usage_log     = get_post_meta($certificate->ID, '_usage_log', true);
+        $usage_log     = $this->get_usage_logs($certificate->ID);
         if (!is_array($usage_log)) {
             wp_send_json_success(array());
         }

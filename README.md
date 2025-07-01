@@ -219,6 +219,10 @@ For support, feature requests, or bug reports, please visit our [GitHub reposito
 
 ## Changelog
 
+### Version 1.0.2
+- Moved certificate usage logs to a dedicated database table
+- Added migration of legacy log meta
+
 ### Version 1.0.1
 - Unified certificate meta keys
 - Added migration for existing data

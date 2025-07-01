@@ -123,15 +123,22 @@ function ffgc_check_fluent_forms() {
 // Initialize plugin
 function ffgc_init() {
     global $ffgc_initialized;
-    
+
     // Prevent multiple initializations
     if ($ffgc_initialized) {
         return;
     }
-    
+
     if (!ffgc_check_fluent_forms()) {
         return;
     }
+
+    // Load plugin textdomain for translations
+    load_plugin_textdomain(
+        'fluentforms-gift-certificates',
+        false,
+        dirname(plugin_basename(__FILE__)) . '/languages'
+    );
     
     // Load plugin classes
     require_once FFGC_PLUGIN_DIR . 'includes/class-ffgc-core.php';

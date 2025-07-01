@@ -224,12 +224,12 @@ class FFGC_Forms {
                 if ($show_info && ($min_amount || $max_amount)) {
                     echo '<p class="ffgc-design-range">';
                     if ($min_amount && $max_amount) {
-                        echo sprintf(__('Range: %s - %s', 'fluentforms-gift-certificates'), 
-                            wc_price($min_amount), wc_price($max_amount));
+                        echo sprintf(__('Range: %s - %s', 'fluentforms-gift-certificates'),
+                            ffgc_format_price($min_amount), ffgc_format_price($max_amount));
                     } elseif ($min_amount) {
-                        echo sprintf(__('Minimum: %s', 'fluentforms-gift-certificates'), wc_price($min_amount));
+                        echo sprintf(__('Minimum: %s', 'fluentforms-gift-certificates'), ffgc_format_price($min_amount));
                     } elseif ($max_amount) {
-                        echo sprintf(__('Maximum: %s', 'fluentforms-gift-certificates'), wc_price($max_amount));
+                        echo sprintf(__('Maximum: %s', 'fluentforms-gift-certificates'), ffgc_format_price($max_amount));
                     }
                     echo '</p>';
                 }
@@ -666,7 +666,7 @@ class FFGC_Forms {
         wp_send_json_success(array(
             'balance' => $balance,
             'expiry_date' => $expiry_date,
-            'message' => sprintf(__('Certificate valid. Balance: %s', 'fluentforms-gift-certificates'), wc_price($balance))
+            'message' => sprintf(__('Certificate valid. Balance: %s', 'fluentforms-gift-certificates'), ffgc_format_price($balance))
         ));
     }
     
@@ -829,9 +829,11 @@ class FFGC_Forms {
         wp_enqueue_script('ffgc-frontend', plugin_dir_url(__FILE__) . '../assets/js/frontend.js', array('jquery'), '1.0.0', true);
         wp_enqueue_style('ffgc-frontend', plugin_dir_url(__FILE__) . '../assets/css/frontend.css', array(), '1.0.0');
         
+        $currency = get_option('ffgc_currency', 'USD');
         wp_localize_script('ffgc-frontend', 'ffgc_ajax', array(
             'ajax_url' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('ffgc_nonce')
+            'nonce' => wp_create_nonce('ffgc_nonce'),
+            'currency_symbol' => ffgc_get_currency_symbol($currency)
         ));
     }
     

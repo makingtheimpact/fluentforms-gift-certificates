@@ -31,6 +31,8 @@ define('FFGC_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('FFGC_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('FFGC_PLUGIN_BASENAME', plugin_basename(__FILE__));
 
+require_once FFGC_PLUGIN_DIR . 'includes/ffgc-utils.php';
+
 // Global flag to prevent multiple initializations
 global $ffgc_initialized;
 $ffgc_initialized = false;

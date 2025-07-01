@@ -3,7 +3,277 @@
  */
 
 jQuery(document).ready(function($) {
-    
+    'use strict';
+
+    // Initialize gift certificate functionality
+    FFGC.init();
+
+    // Global FFGC object
+    window.FFGC = {
+        init: function() {
+            this.initDesignSelection();
+            this.initRedemptionFields();
+            this.initBalanceCheck();
+        },
+
+        // Initialize design selection grid
+        initDesignSelection: function() {
+            $(document).on('click', '.ffgc-design-option', function() {
+                var $option = $(this);
+                var $field = $option.closest('.ffgc-design-field');
+                var $input = $field.find('input[type="hidden"]');
+                var designId = $option.data('design-id');
+
+                // Remove selected class from all options
+                $field.find('.ffgc-design-option').removeClass('selected');
+                
+                // Add selected class to clicked option
+                $option.addClass('selected');
+                
+                // Update hidden input value
+                $input.val(designId).trigger('change');
+
+                // Trigger custom event for form calculations
+                $input.trigger('ffgc_design_selected', [designId]);
+            });
+        },
+
+        // Initialize redemption fields
+        initRedemptionFields: function() {
+            $(document).on('input', '.ffgc-certificate-code', function() {
+                var $input = $(this);
+                var $field = $input.closest('.ffgc-redemption-field');
+                var $result = $field.find('.ffgc-redemption-result');
+                var autoApply = $input.data('auto-apply') === 'true';
+                var code = $input.val().trim();
+
+                // Clear previous results
+                $result.hide().removeClass('success error');
+
+                if (code.length >= 8 && autoApply) {
+                    // Auto-validate and apply
+                    FFGC.validateAndApplyCertificate($input, code);
+                }
+            });
+
+            // Handle balance check button clicks
+            $(document).on('click', '.ffgc-check-balance-btn', function() {
+                var $btn = $(this);
+                var $field = $btn.closest('.ffgc-redemption-field');
+                var $input = $field.find('.ffgc-certificate-code');
+                var code = $input.val().trim();
+
+                if (!code) {
+                    FFGC.showBalanceResult($field, 'error', 'Please enter a certificate code');
+                    return;
+                }
+
+                FFGC.checkBalance($field, code);
+            });
+        },
+
+        // Initialize balance check functionality
+        initBalanceCheck: function() {
+            // Legacy balance check (for backward compatibility)
+            $(document).on('click', '#ffgc_check_balance', function() {
+                var code = $('#ffgc_certificate_code').val().trim();
+                if (!code) {
+                    FFGC.showBalanceResult($('#ffgc_balance_result'), 'error', 'Please enter a certificate code');
+                    return;
+                }
+                FFGC.checkBalanceLegacy(code);
+            });
+        },
+
+        // Check certificate balance
+        checkBalance: function($field, code) {
+            var $btn = $field.find('.ffgc-check-balance-btn');
+            var $result = $field.find('.ffgc-balance-result');
+
+            // Show loading state
+            $btn.prop('disabled', true).text('Checking...');
+            $result.hide();
+
+            $.ajax({
+                url: ffgc_ajax.ajax_url,
+                type: 'POST',
+                data: {
+                    action: 'ffgc_validate_certificate',
+                    nonce: ffgc_ajax.nonce,
+                    code: code
+                },
+                success: function(response) {
+                    if (response.success) {
+                        FFGC.showBalanceResult($field, 'success', response.data.message);
+                    } else {
+                        FFGC.showBalanceResult($field, 'error', response.data);
+                    }
+                },
+                error: function() {
+                    FFGC.showBalanceResult($field, 'error', 'An error occurred while checking the certificate');
+                },
+                complete: function() {
+                    $btn.prop('disabled', false).text('Check Balance');
+                }
+            });
+        },
+
+        // Legacy balance check
+        checkBalanceLegacy: function(code) {
+            var $btn = $('#ffgc_check_balance');
+            var $result = $('#ffgc_balance_result');
+
+            $btn.prop('disabled', true).text('Checking...');
+            $result.hide();
+
+            $.ajax({
+                url: ffgc_ajax.ajax_url,
+                type: 'POST',
+                data: {
+                    action: 'ffgc_validate_certificate',
+                    nonce: ffgc_ajax.nonce,
+                    code: code
+                },
+                success: function(response) {
+                    if (response.success) {
+                        FFGC.showBalanceResult($result, 'success', response.data.message);
+                    } else {
+                        FFGC.showBalanceResult($result, 'error', response.data);
+                    }
+                },
+                error: function() {
+                    FFGC.showBalanceResult($result, 'error', 'An error occurred while checking the certificate');
+                },
+                complete: function() {
+                    $btn.prop('disabled', false).text('Check Balance');
+                }
+            });
+        },
+
+        // Validate and apply certificate
+        validateAndApplyCertificate: function($input, code) {
+            var $field = $input.closest('.ffgc-redemption-field');
+            var $result = $field.find('.ffgc-redemption-result');
+
+            $.ajax({
+                url: ffgc_ajax.ajax_url,
+                type: 'POST',
+                data: {
+                    action: 'ffgc_validate_certificate',
+                    nonce: ffgc_ajax.nonce,
+                    code: code
+                },
+                success: function(response) {
+                    if (response.success) {
+                        FFGC.showRedemptionResult($field, 'success', 'Certificate applied successfully! Balance: ' + response.data.balance);
+                        
+                        // Trigger form recalculation if available
+                        if (typeof window.FluentForm !== 'undefined') {
+                            $input.trigger('ffgc_certificate_applied', [response.data.balance]);
+                        }
+                    } else {
+                        FFGC.showRedemptionResult($field, 'error', response.data);
+                    }
+                },
+                error: function() {
+                    FFGC.showRedemptionResult($field, 'error', 'An error occurred while applying the certificate');
+                }
+            });
+        },
+
+        // Show balance result
+        showBalanceResult: function($element, type, message) {
+            $element
+                .removeClass('success error')
+                .addClass(type)
+                .html(message)
+                .show();
+        },
+
+        // Show redemption result
+        showRedemptionResult: function($field, type, message) {
+            var $result = $field.find('.ffgc-redemption-result');
+            $result
+                .removeClass('success error')
+                .addClass(type)
+                .html(message)
+                .show();
+        },
+
+        // Format currency
+        formatCurrency: function(amount) {
+            if (typeof wc_price !== 'undefined') {
+                return wc_price(amount);
+            }
+            return '$' + parseFloat(amount).toFixed(2);
+        }
+    };
+
+    // Fluent Forms integration
+    if (typeof window.FluentForm !== 'undefined') {
+        // Add custom field types to Fluent Forms
+        FluentForm.addFieldType('gift_certificate_design', {
+            template: function(field) {
+                return '<div class="ffgc-design-field" data-field-id="' + field.attributes.name + '">' +
+                       '<input type="hidden" name="' + field.attributes.name + '" value="" />' +
+                       '<div class="ffgc-design-grid"></div>' +
+                       '</div>';
+            },
+            getValue: function(field) {
+                return field.$el.find('input[type="hidden"]').val();
+            },
+            setValue: function(field, value) {
+                field.$el.find('input[type="hidden"]').val(value);
+                field.$el.find('.ffgc-design-option').removeClass('selected');
+                field.$el.find('[data-design-id="' + value + '"]').addClass('selected');
+            }
+        });
+
+        FluentForm.addFieldType('gift_certificate_redemption', {
+            template: function(field) {
+                return '<div class="ffgc-redemption-field" data-field-id="' + field.attributes.name + '">' +
+                       '<div class="ffgc-code-input-group">' +
+                       '<input type="text" name="' + field.attributes.name + '" class="ffgc-certificate-code" placeholder="Enter gift certificate code" />' +
+                       '<button type="button" class="ffgc-check-balance-btn">Check Balance</button>' +
+                       '</div>' +
+                       '<div class="ffgc-balance-result" style="display: none;"></div>' +
+                       '<div class="ffgc-redemption-result" style="display: none;"></div>' +
+                       '</div>';
+            },
+            getValue: function(field) {
+                return field.$el.find('.ffgc-certificate-code').val();
+            },
+            setValue: function(field, value) {
+                field.$el.find('.ffgc-certificate-code').val(value);
+            }
+        });
+
+        // Handle form calculations
+        $(document).on('ffgc_certificate_applied', function(e, balance) {
+            var $form = $(e.target).closest('form');
+            if ($form.length && typeof $form[0].FluentForm !== 'undefined') {
+                // Trigger form recalculation
+                $form[0].FluentForm.recalculateTotal();
+            }
+        });
+
+        $(document).on('ffgc_design_selected', function(e, designId) {
+            var $form = $(e.target).closest('form');
+            if ($form.length && typeof $form[0].FluentForm !== 'undefined') {
+                // Trigger form recalculation when design is selected
+                $form[0].FluentForm.recalculateTotal();
+            }
+        });
+    }
+
+    // WooCommerce integration (if available)
+    if (typeof wc_price !== 'undefined') {
+        // Override currency formatting to use WooCommerce
+        FFGC.formatCurrency = function(amount) {
+            return wc_price(amount);
+        };
+    }
+
     // Initialize frontend functionality
     initFrontendFeatures();
     
@@ -78,47 +348,6 @@ jQuery(document).ready(function($) {
                 if (response.success) {
                     resultDiv.html('<div class="ffgc-success">' + response.data + '</div>');
                     $('#ffgc-purchase-form')[0].reset();
-                } else {
-                    resultDiv.html('<div class="ffgc-error">' + response.data + '</div>');
-                }
-            },
-            error: function() {
-                resultDiv.html('<div class="ffgc-error">An error occurred. Please try again.</div>');
-            }
-        });
-    });
-    
-    // Handle check balance button click
-    $(document).on('click', '#ffgc_check_balance', function() {
-        var code = $('#ffgc_certificate_code').val();
-        var resultDiv = $('#ffgc_balance_result');
-        
-        if (!code) {
-            resultDiv.html('<div class="ffgc-error">Please enter a gift certificate code.</div>').show();
-            return;
-        }
-        
-        resultDiv.html('<div class="ffgc-loading">Checking balance...</div>').show();
-        
-        $.ajax({
-            url: ffgc_ajax.ajax_url,
-            type: 'POST',
-            data: {
-                action: 'ffgc_validate_certificate',
-                code: code,
-                nonce: ffgc_ajax.nonce
-            },
-            success: function(response) {
-                if (response.success) {
-                    var html = '<div class="ffgc-success">';
-                    html += '<h4>Certificate Valid!</h4>';
-                    html += '<p><strong>Balance:</strong> $' + response.data.balance + '</p>';
-                    html += '<p><strong>Total Value:</strong> $' + response.data.total + '</p>';
-                    html += '<p><strong>Used Amount:</strong> $' + response.data.used + '</p>';
-                    html += '<p><strong>Expires:</strong> ' + response.data.expiry_date + '</p>';
-                    html += '</div>';
-                    
-                    resultDiv.html(html);
                 } else {
                     resultDiv.html('<div class="ffgc-error">' + response.data + '</div>');
                 }

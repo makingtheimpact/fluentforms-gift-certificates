@@ -70,6 +70,15 @@ class FFGC_Core {
         
         add_submenu_page(
             'fluentforms-gift-certificates',
+            __('Configure Forms', 'fluentforms-gift-certificates'),
+            __('Configure Forms', 'fluentforms-gift-certificates'),
+            'manage_options',
+            'fluentforms-gift-certificates-forms',
+            array($this, 'forms_page')
+        );
+        
+        add_submenu_page(
+            'fluentforms-gift-certificates',
             __('Designs', 'fluentforms-gift-certificates'),
             __('Designs', 'fluentforms-gift-certificates'),
             'manage_options',
@@ -84,6 +93,10 @@ class FFGC_Core {
     
     public function settings_page() {
         include FFGC_PLUGIN_DIR . 'templates/admin/settings-page.php';
+    }
+    
+    public function forms_page() {
+        include FFGC_PLUGIN_DIR . 'templates/admin/forms-page.php';
     }
     
     public function designs_page() {
@@ -141,14 +154,14 @@ class FFGC_Core {
     public function ajax_check_balance() {
         check_ajax_referer('ffgc_nonce', 'nonce');
         
-        $code = sanitize_text_field($_POST['code']);
+        $code = sanitize_text_field($_POST['code'] ?? '');
         
         if (empty($code)) {
             wp_send_json_error(__('Please enter a gift certificate code.', 'fluentforms-gift-certificates'));
         }
         
         $certificate = get_posts(array(
-            'post_type' => 'ffgc_cert',
+            'post_type' => 'ffgc_certificate',
             'meta_query' => array(
                 array(
                     'key' => '_certificate_code',
@@ -164,20 +177,22 @@ class FFGC_Core {
         }
         
         $certificate = $certificate[0];
-        $status = get_post_meta($certificate->ID, '_certificate_status', true);
-        $amount = get_post_meta($certificate->ID, '_certificate_amount', true);
-        $used_amount = get_post_meta($certificate->ID, '_certificate_used_amount', true);
+        $status = get_post_meta($certificate->ID, '_status', true);
+        $balance = get_post_meta($certificate->ID, '_balance', true);
+        $amount = get_post_meta($certificate->ID, '_amount', true);
         
-        if ($status === 'used') {
-            wp_send_json_error(__('This gift certificate has already been used.', 'fluentforms-gift-certificates'));
+        if ($status !== 'active') {
+            wp_send_json_error(__('This gift certificate is not active.', 'fluentforms-gift-certificates'));
         }
         
-        $remaining = $amount - $used_amount;
+        if ($balance <= 0) {
+            wp_send_json_error(__('This gift certificate has no remaining balance.', 'fluentforms-gift-certificates'));
+        }
         
         wp_send_json_success(array(
-            'balance' => $remaining,
+            'balance' => $balance,
             'total' => $amount,
-            'used' => $used_amount
+            'used' => $amount - $balance
         ));
     }
 } 

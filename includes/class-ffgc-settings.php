@@ -58,6 +58,18 @@ class FFGC_Settings {
             'default' => __('Your Gift Certificate is Ready!', 'fluentforms-gift-certificates')
         ));
         
+        register_setting('ffgc_settings', 'ffgc_purchase_forms', array(
+            'type' => 'array',
+            'sanitize_callback' => array($this, 'sanitize_forms_array'),
+            'default' => array()
+        ));
+        
+        register_setting('ffgc_settings', 'ffgc_redemption_forms', array(
+            'type' => 'array',
+            'sanitize_callback' => array($this, 'sanitize_forms_array'),
+            'default' => array()
+        ));
+        
         register_setting('ffgc_settings', 'ffgc_forms_enabled', array(
             'type' => 'array',
             'sanitize_callback' => array($this, 'sanitize_forms_array'),
@@ -74,6 +86,18 @@ class FFGC_Settings {
             'type' => 'string',
             'sanitize_callback' => 'sanitize_text_field',
             'default' => __('Enter your gift certificate code', 'fluentforms-gift-certificates')
+        ));
+        
+        register_setting('ffgc_settings', 'ffgc_design_grid_columns', array(
+            'type' => 'number',
+            'sanitize_callback' => 'intval',
+            'default' => 3
+        ));
+        
+        register_setting('ffgc_settings', 'ffgc_auto_apply_certificates', array(
+            'type' => 'boolean',
+            'sanitize_callback' => array($this, 'sanitize_boolean'),
+            'default' => false
         ));
         
         // Add settings sections
@@ -95,6 +119,13 @@ class FFGC_Settings {
             'ffgc_form_settings',
             __('Form Integration Settings', 'fluentforms-gift-certificates'),
             array($this, 'form_settings_section_callback'),
+            'ffgc_settings'
+        );
+        
+        add_settings_section(
+            'ffgc_field_settings',
+            __('Field Display Settings', 'fluentforms-gift-certificates'),
+            array($this, 'field_settings_section_callback'),
             'ffgc_settings'
         );
         
@@ -156,8 +187,24 @@ class FFGC_Settings {
         );
         
         add_settings_field(
+            'ffgc_purchase_forms',
+            __('Purchase Forms', 'fluentforms-gift-certificates'),
+            array($this, 'purchase_forms_field_callback'),
+            'ffgc_settings',
+            'ffgc_form_settings'
+        );
+        
+        add_settings_field(
+            'ffgc_redemption_forms',
+            __('Redemption Forms', 'fluentforms-gift-certificates'),
+            array($this, 'redemption_forms_field_callback'),
+            'ffgc_settings',
+            'ffgc_form_settings'
+        );
+        
+        add_settings_field(
             'ffgc_forms_enabled',
-            __('Enable Forms', 'fluentforms-gift-certificates'),
+            __('Legacy: Enable Forms', 'fluentforms-gift-certificates'),
             array($this, 'forms_enabled_field_callback'),
             'ffgc_settings',
             'ffgc_form_settings'
@@ -168,7 +215,7 @@ class FFGC_Settings {
             __('Field Label', 'fluentforms-gift-certificates'),
             array($this, 'field_label_callback'),
             'ffgc_settings',
-            'ffgc_form_settings'
+            'ffgc_field_settings'
         );
         
         add_settings_field(
@@ -176,7 +223,23 @@ class FFGC_Settings {
             __('Field Placeholder', 'fluentforms-gift-certificates'),
             array($this, 'field_placeholder_callback'),
             'ffgc_settings',
-            'ffgc_form_settings'
+            'ffgc_field_settings'
+        );
+        
+        add_settings_field(
+            'ffgc_design_grid_columns',
+            __('Design Grid Columns', 'fluentforms-gift-certificates'),
+            array($this, 'design_grid_columns_callback'),
+            'ffgc_settings',
+            'ffgc_field_settings'
+        );
+        
+        add_settings_field(
+            'ffgc_auto_apply_certificates',
+            __('Auto-apply Certificates', 'fluentforms-gift-certificates'),
+            array($this, 'auto_apply_certificates_callback'),
+            'ffgc_settings',
+            'ffgc_field_settings'
         );
     }
     
@@ -197,7 +260,11 @@ class FFGC_Settings {
     }
     
     public function form_settings_section_callback() {
-        echo '<p>' . __('Configure which forms should have gift certificate functionality.', 'fluentforms-gift-certificates') . '</p>';
+        echo '<p>' . __('Configure which Fluent Forms should have gift certificate functionality. Use the new field types in the form builder for better integration.', 'fluentforms-gift-certificates') . '</p>';
+    }
+    
+    public function field_settings_section_callback() {
+        echo '<p>' . __('Configure how gift certificate fields are displayed and behave.', 'fluentforms-gift-certificates') . '</p>';
     }
     
     public function min_amount_field_callback() {
@@ -255,6 +322,32 @@ class FFGC_Settings {
         echo '<p class="description">' . __('Subject line for gift certificate emails.', 'fluentforms-gift-certificates') . '</p>';
     }
     
+    public function purchase_forms_field_callback() {
+        $selected_forms = get_option('ffgc_purchase_forms', array());
+        $forms = $this->get_fluent_forms();
+        
+        echo '<select name="ffgc_purchase_forms[]" multiple style="width: 100%; min-height: 100px;">';
+        foreach ($forms as $form) {
+            $selected = in_array($form->id, $selected_forms) ? 'selected' : '';
+            echo '<option value="' . esc_attr($form->id) . '" ' . $selected . '>' . esc_html($form->title) . '</option>';
+        }
+        echo '</select>';
+        echo '<p class="description">' . __('Select forms that will be used for purchasing gift certificates. These forms should include payment fields and the Gift Certificate Design field type.', 'fluentforms-gift-certificates') . '</p>';
+    }
+    
+    public function redemption_forms_field_callback() {
+        $selected_forms = get_option('ffgc_redemption_forms', array());
+        $forms = $this->get_fluent_forms();
+        
+        echo '<select name="ffgc_redemption_forms[]" multiple style="width: 100%; min-height: 100px;">';
+        foreach ($forms as $form) {
+            $selected = in_array($form->id, $selected_forms) ? 'selected' : '';
+            echo '<option value="' . esc_attr($form->id) . '" ' . $selected . '>' . esc_html($form->title) . '</option>';
+        }
+        echo '</select>';
+        echo '<p class="description">' . __('Select forms that will allow users to redeem gift certificates. These forms should include the Gift Certificate Redemption field type.', 'fluentforms-gift-certificates') . '</p>';
+    }
+    
     public function forms_enabled_field_callback() {
         $enabled_forms = get_option('ffgc_forms_enabled', array());
         
@@ -296,5 +389,33 @@ class FFGC_Settings {
         $value = get_option('ffgc_gift_certificate_field_placeholder', __('Enter your gift certificate code', 'fluentforms-gift-certificates'));
         echo '<input type="text" name="ffgc_gift_certificate_field_placeholder" value="' . esc_attr($value) . '" class="regular-text" />';
         echo '<p class="description">' . __('Placeholder text for the gift certificate field in forms.', 'fluentforms-gift-certificates') . '</p>';
+    }
+    
+    public function design_grid_columns_callback() {
+        $columns = get_option('ffgc_design_grid_columns', 3);
+        echo '<input type="number" name="ffgc_design_grid_columns" value="' . esc_attr($columns) . '" min="1" max="6" />';
+        echo '<p class="description">' . __('Number of columns in the design selection grid (1-6).', 'fluentforms-gift-certificates') . '</p>';
+    }
+    
+    public function auto_apply_certificates_callback() {
+        $auto_apply = get_option('ffgc_auto_apply_certificates', false);
+        echo '<input type="checkbox" name="ffgc_auto_apply_certificates" value="1" ' . checked(1, $auto_apply, false) . ' />';
+        echo '<p class="description">' . __('Automatically apply valid gift certificates when entered (may affect form calculations).', 'fluentforms-gift-certificates') . '</p>';
+    }
+    
+    public function sanitize_boolean($input) {
+        return (bool) $input;
+    }
+    
+    private function get_fluent_forms() {
+        if (!function_exists('wpFluent')) {
+            return array();
+        }
+        
+        try {
+            return wpFluent()->table('fluentform_forms')->select(['id', 'title'])->get();
+        } catch (Exception $e) {
+            return array();
+        }
     }
 } 

@@ -3,301 +3,303 @@
  */
 
 jQuery(document).ready(function($) {
-    
+    'use strict';
+
     // Initialize admin functionality
-    initAdminFeatures();
-    
-    function initAdminFeatures() {
-        // Add any admin-specific functionality here
-        console.log('Fluent Forms Gift Certificates Admin initialized');
-    }
-    
-    // Handle resend email functionality (if not already handled in meta box)
-    $(document).on('click', '#ffgc-resend-email', function() {
-        var button = $(this);
-        var spinner = button.next('.spinner');
-        var certificateId = button.data('certificate-id') || getCertificateIdFromUrl();
-        
-        if (!certificateId) {
-            alert('Certificate ID not found');
-            return;
-        }
-        
-        button.prop('disabled', true);
-        spinner.css('visibility', 'visible');
-        
-        $.ajax({
-            url: ajaxurl,
-            type: 'POST',
-            data: {
-                action: 'ffgc_resend_email',
-                certificate_id: certificateId,
-                nonce: ffgc_ajax.nonce
-            },
-            success: function(response) {
-                if (response.success) {
-                    alert('Email sent successfully!');
-                } else {
-                    alert('Failed to send email: ' + (response.data || 'Unknown error'));
+    FFGC_Admin.init();
+
+    // Global FFGC Admin object
+    window.FFGC_Admin = {
+        init: function() {
+            this.initFluentFormsIntegration();
+            this.initDesignManagement();
+            this.initCertificateManagement();
+        },
+
+        // Initialize Fluent Forms integration
+        initFluentFormsIntegration: function() {
+            // Check if we're in Fluent Forms editor
+            if (typeof window.FluentFormEditor !== 'undefined') {
+                this.registerCustomFields();
+            }
+        },
+
+        // Register custom field types with Fluent Forms
+        registerCustomFields: function() {
+            // Register Gift Certificate Design field
+            if (typeof window.FluentFormEditor !== 'undefined' && window.FluentFormEditor.addFieldType) {
+                window.FluentFormEditor.addFieldType('gift_certificate_design', {
+                    title: 'Gift Certificate Design',
+                    icon: 'el-icon-picture',
+                    category: 'Advanced Fields',
+                    template: function(field) {
+                        return '<div class="ffgc-design-field" data-field-id="' + field.attributes.name + '">' +
+                               '<input type="hidden" name="' + field.attributes.name + '" value="' + (field.attributes.value || '') + '" ' + (field.attributes.required ? 'required' : '') + ' />' +
+                               '<div class="ffgc-design-grid" style="grid-template-columns: repeat(' + (field.settings.columns || 3) + ', 1fr);">' +
+                               '<div class="ffgc-loading-designs">Loading designs...</div>' +
+                               '</div>' +
+                               '</div>';
+                    },
+                    getValue: function(field) {
+                        return field.$el.find('input[type="hidden"]').val();
+                    },
+                    setValue: function(field, value) {
+                        field.$el.find('input[type="hidden"]').val(value);
+                        field.$el.find('.ffgc-design-option').removeClass('selected');
+                        field.$el.find('[data-design-id="' + value + '"]').addClass('selected');
+                    },
+                    getSettings: function(field) {
+                        return {
+                            display_type: field.settings.display_type || 'grid',
+                            columns: field.settings.columns || 3,
+                            show_design_info: field.settings.show_design_info !== false
+                        };
+                    },
+                    setSettings: function(field, settings) {
+                        field.settings = $.extend({}, field.settings, settings);
+                        if (settings.columns) {
+                            field.$el.find('.ffgc-design-grid').css('grid-template-columns', 'repeat(' + settings.columns + ', 1fr)');
+                        }
+                    }
+                });
+
+                // Register Gift Certificate Redemption field
+                window.FluentFormEditor.addFieldType('gift_certificate_redemption', {
+                    title: 'Gift Certificate Redemption',
+                    icon: 'el-icon-ticket',
+                    category: 'Advanced Fields',
+                    template: function(field) {
+                        return '<div class="ffgc-redemption-field" data-field-id="' + field.attributes.name + '">' +
+                               '<div class="ffgc-code-input-group">' +
+                               '<input type="text" name="' + field.attributes.name + '" value="' + (field.attributes.value || '') + '" ' +
+                               'placeholder="' + (field.attributes.placeholder || 'Enter gift certificate code') + '" ' +
+                               (field.attributes.required ? 'required' : '') + ' class="ffgc-certificate-code" ' +
+                               'data-auto-apply="' + (field.settings.auto_apply ? 'true' : 'false') + '" />' +
+                               (field.settings.show_balance_check !== false ? '<button type="button" class="ffgc-check-balance-btn">Check Balance</button>' : '') +
+                               '</div>' +
+                               '<div class="ffgc-balance-result" style="display: none;"></div>' +
+                               '<div class="ffgc-redemption-result" style="display: none;"></div>' +
+                               '</div>';
+                    },
+                    getValue: function(field) {
+                        return field.$el.find('.ffgc-certificate-code').val();
+                    },
+                    setValue: function(field, value) {
+                        field.$el.find('.ffgc-certificate-code').val(value);
+                    },
+                    getSettings: function(field) {
+                        return {
+                            show_balance_check: field.settings.show_balance_check !== false,
+                            auto_apply: field.settings.auto_apply || false
+                        };
+                    },
+                    setSettings: function(field, settings) {
+                        field.settings = $.extend({}, field.settings, settings);
+                    }
+                });
+
+                // Load designs for design fields
+                this.loadDesignsForFields();
+            }
+        },
+
+        // Load designs for design fields
+        loadDesignsForFields: function() {
+            $.ajax({
+                url: ffgc_ajax.ajax_url,
+                type: 'POST',
+                data: {
+                    action: 'ffgc_get_designs',
+                    nonce: ffgc_ajax.nonce
+                },
+                success: function(response) {
+                    if (response.success) {
+                        FFGC_Admin.populateDesignFields(response.data);
+                    }
                 }
-            },
-            error: function() {
-                alert('An error occurred while sending the email.');
-            },
-            complete: function() {
-                button.prop('disabled', false);
-                spinner.css('visibility', 'hidden');
-            }
-        });
-    });
-    
-    // Helper function to get certificate ID from URL
-    function getCertificateIdFromUrl() {
-        var urlParams = new URLSearchParams(window.location.search);
-        return urlParams.get('post');
-    }
-    
-    // Handle design preview functionality
-    $(document).on('click', '.ffgc-design-preview', function(e) {
-        e.preventDefault();
-        var designId = $(this).data('design-id');
-        
-        if (designId) {
-            // Open design preview in a modal or new window
-            window.open(ajaxurl + '?action=ffgc_preview_design&design_id=' + designId + '&nonce=' + ffgc_ajax.nonce, 'design_preview', 'width=800,height=600');
-        }
-    });
-    
-    // Handle bulk actions for certificates
-    $(document).on('change', '#bulk-action-selector-top, #bulk-action-selector-bottom', function() {
-        var selectedAction = $(this).val();
-        var bulkActionButton = $('.button-primary[value="Apply"]');
-        
-        if (selectedAction === 'resend_email') {
-            bulkActionButton.text('Resend Emails');
-        } else {
-            bulkActionButton.text('Apply');
-        }
-    });
-    
-    // Handle certificate status changes
-    $(document).on('change', 'select[name="_certificate_status"]', function() {
-        var status = $(this).val();
-        var row = $(this).closest('tr');
-        
-        // Update visual status indicator
-        row.find('.ffgc-status').removeClass('unused used expired').addClass(status);
-        row.find('.ffgc-status').text(status.charAt(0).toUpperCase() + status.slice(1));
-    });
-    
-    // Handle amount validation
-    $(document).on('blur', 'input[name="_certificate_amount"]', function() {
-        var amount = parseFloat($(this).val());
-        var minAmount = parseFloat($(this).data('min-amount') || 0);
-        var maxAmount = parseFloat($(this).data('max-amount') || 999999);
-        
-        if (amount < minAmount) {
-            alert('Amount cannot be less than $' + minAmount.toFixed(2));
-            $(this).val(minAmount.toFixed(2));
-        } else if (amount > maxAmount) {
-            alert('Amount cannot be more than $' + maxAmount.toFixed(2));
-            $(this).val(maxAmount.toFixed(2));
-        }
-    });
-    
-    // Handle design amount range validation
-    $(document).on('blur', 'input[name="_min_amount"], input[name="_max_amount"]', function() {
-        var minAmount = parseFloat($('input[name="_min_amount"]').val());
-        var maxAmount = parseFloat($('input[name="_max_amount"]').val());
-        
-        if (minAmount && maxAmount && minAmount >= maxAmount) {
-            alert('Minimum amount must be less than maximum amount');
-            $(this).focus();
-        }
-    });
-    
-    // Handle email template preview
-    $(document).on('click', '#ffgc-preview-template', function() {
-        var template = $('#_email_template').val();
-        var designId = $('#_design_id').val();
-        
-        if (!template) {
-            alert('Please enter an email template first');
-            return;
-        }
-        
-        // Open template preview in a new window
-        var previewWindow = window.open('', 'template_preview', 'width=800,height=600');
-        previewWindow.document.write(`
-            <!DOCTYPE html>
-            <html>
-            <head>
-                <title>Email Template Preview</title>
-                <style>
-                    body { font-family: Arial, sans-serif; margin: 20px; }
-                    .preview-header { background: #f1f1f1; padding: 10px; margin-bottom: 20px; }
-                    .preview-content { border: 1px solid #ddd; padding: 20px; }
-                </style>
-            </head>
-            <body>
-                <div class="preview-header">
-                    <h2>Email Template Preview</h2>
-                    <p>This is a preview of how the email will look. Placeholders will be replaced with actual data.</p>
-                </div>
-                <div class="preview-content">
-                    ${template.replace(/\{([^}]+)\}/g, '<span style="background: #ffeb3b; padding: 2px 4px; border-radius: 3px;">{$1}</span>')}
-                </div>
-            </body>
-            </html>
-        `);
-        previewWindow.document.close();
-    });
-    
-    // Handle form integration settings
-    $(document).on('change', 'input[name="ffgc_forms_enabled[]"]', function() {
-        var checkedForms = $('input[name="ffgc_forms_enabled[]"]:checked');
-        
-        if (checkedForms.length > 0) {
-            $('#ffgc-forms-notice').remove();
-            $('.ffgc-forms-enabled').show();
-        } else {
-            if ($('#ffgc-forms-notice').length === 0) {
-                $('<div id="ffgc-forms-notice" class="notice notice-warning"><p>No forms are currently enabled for gift certificate functionality.</p></div>').insertAfter('.ffgc-form-settings');
-            }
-            $('.ffgc-forms-enabled').hide();
-        }
-    });
-    
-    // Handle certificate code generation
-    $(document).on('click', '#ffgc-generate-code', function() {
-        var codeField = $('#_certificate_code');
-        
-        $.ajax({
-            url: ajaxurl,
-            type: 'POST',
-            data: {
-                action: 'ffgc_generate_code',
-                nonce: ffgc_ajax.nonce
-            },
-            success: function(response) {
-                if (response.success) {
-                    codeField.val(response.data);
-                } else {
-                    alert('Failed to generate code: ' + (response.data || 'Unknown error'));
+            });
+        },
+
+        // Populate design fields with available designs
+        populateDesignFields: function(designs) {
+            $('.ffgc-design-field').each(function() {
+                var $field = $(this);
+                var $grid = $field.find('.ffgc-design-grid');
+                
+                if ($grid.find('.ffgc-loading-designs').length) {
+                    $grid.empty();
+                    
+                    designs.forEach(function(design) {
+                        var designHtml = '<div class="ffgc-design-option" data-design-id="' + design.id + '">';
+                        if (design.image_url) {
+                            designHtml += '<div class="ffgc-design-image"><img src="' + design.image_url + '" alt="' + design.title + '" /></div>';
+                        }
+                        designHtml += '<div class="ffgc-design-info">';
+                        designHtml += '<h4>' + design.title + '</h4>';
+                        if (design.min_amount || design.max_amount) {
+                            designHtml += '<p class="ffgc-design-range">';
+                            if (design.min_amount && design.max_amount) {
+                                designHtml += 'Range: $' + design.min_amount + ' - $' + design.max_amount;
+                            } else if (design.min_amount) {
+                                designHtml += 'Minimum: $' + design.min_amount;
+                            } else if (design.max_amount) {
+                                designHtml += 'Maximum: $' + design.max_amount;
+                            }
+                            designHtml += '</p>';
+                        }
+                        designHtml += '</div></div>';
+                        
+                        $grid.append(designHtml);
+                    });
                 }
-            },
-            error: function() {
-                alert('An error occurred while generating the code.');
-            }
-        });
-    });
-    
-    // Handle usage history display
-    $(document).on('click', '.ffgc-view-history', function() {
-        var certificateId = $(this).data('certificate-id');
-        var modal = $('#ffgc-history-modal');
-        
-        if (modal.length === 0) {
-            // Create modal if it doesn't exist
-            $('body').append(`
-                <div id="ffgc-history-modal" class="ffgc-modal" style="display: none;">
-                    <div class="ffgc-modal-content">
-                        <span class="ffgc-modal-close">&times;</span>
-                        <h3>Usage History</h3>
-                        <div id="ffgc-history-content"></div>
-                    </div>
-                </div>
-            `);
-        }
-        
-        // Load usage history
-        $.ajax({
-            url: ajaxurl,
-            type: 'POST',
-            data: {
-                action: 'ffgc_get_certificate_history',
-                certificate_id: certificateId,
-                nonce: ffgc_ajax.nonce
-            },
-            success: function(response) {
-                if (response.success) {
-                    $('#ffgc-history-content').html(response.data);
-                    $('#ffgc-history-modal').show();
-                } else {
-                    alert('Failed to load usage history: ' + (response.data || 'Unknown error'));
+            });
+        },
+
+        // Initialize design management
+        initDesignManagement: function() {
+            // Handle design image upload
+            $(document).on('click', '.ffgc-upload-image', function(e) {
+                e.preventDefault();
+                var $button = $(this);
+                var $input = $button.siblings('input[type="hidden"]');
+                var $preview = $button.siblings('.ffgc-image-preview');
+
+                var frame = wp.media({
+                    title: 'Select Design Image',
+                    button: {
+                        text: 'Use this image'
+                    },
+                    multiple: false
+                });
+
+                frame.on('select', function() {
+                    var attachment = frame.state().get('selection').first().toJSON();
+                    $input.val(attachment.id);
+                    $preview.html('<img src="' + attachment.sizes.medium.url + '" alt="Design Image" />');
+                });
+
+                frame.open();
+            });
+
+            // Handle design status toggle
+            $(document).on('change', '.ffgc-design-status', function() {
+                var $checkbox = $(this);
+                var designId = $checkbox.data('design-id');
+                var isActive = $checkbox.is(':checked');
+
+                $.ajax({
+                    url: ffgc_ajax.ajax_url,
+                    type: 'POST',
+                    data: {
+                        action: 'ffgc_toggle_design_status',
+                        nonce: ffgc_ajax.nonce,
+                        design_id: designId,
+                        is_active: isActive
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            // Show success message
+                            FFGC_Admin.showMessage('Design status updated successfully', 'success');
+                        } else {
+                            // Revert checkbox state
+                            $checkbox.prop('checked', !isActive);
+                            FFGC_Admin.showMessage('Failed to update design status', 'error');
+                        }
+                    },
+                    error: function() {
+                        // Revert checkbox state
+                        $checkbox.prop('checked', !isActive);
+                        FFGC_Admin.showMessage('An error occurred', 'error');
+                    }
+                });
+            });
+        },
+
+        // Initialize certificate management
+        initCertificateManagement: function() {
+            // Handle certificate status changes
+            $(document).on('change', '.ffgc-certificate-status', function() {
+                var $select = $(this);
+                var certificateId = $select.data('certificate-id');
+                var newStatus = $select.val();
+
+                $.ajax({
+                    url: ffgc_ajax.ajax_url,
+                    type: 'POST',
+                    data: {
+                        action: 'ffgc_update_certificate_status',
+                        nonce: ffgc_ajax.nonce,
+                        certificate_id: certificateId,
+                        status: newStatus
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            FFGC_Admin.showMessage('Certificate status updated successfully', 'success');
+                        } else {
+                            FFGC_Admin.showMessage('Failed to update certificate status', 'error');
+                        }
+                    },
+                    error: function() {
+                        FFGC_Admin.showMessage('An error occurred', 'error');
+                    }
+                });
+            });
+
+            // Handle bulk actions
+            $(document).on('click', '.ffgc-bulk-action', function(e) {
+                e.preventDefault();
+                var $button = $(this);
+                var action = $button.data('action');
+                var selectedCertificates = $('.ffgc-certificate-checkbox:checked').map(function() {
+                    return $(this).val();
+                }).get();
+
+                if (selectedCertificates.length === 0) {
+                    FFGC_Admin.showMessage('Please select certificates to perform this action', 'warning');
+                    return;
                 }
-            },
-            error: function() {
-                alert('An error occurred while loading usage history.');
-            }
-        });
-    });
-    
-    // Handle modal close
-    $(document).on('click', '.ffgc-modal-close, .ffgc-modal', function(e) {
-        if (e.target === this) {
-            $(this).hide();
+
+                if (confirm('Are you sure you want to perform this action on ' + selectedCertificates.length + ' certificate(s)?')) {
+                    $.ajax({
+                        url: ffgc_ajax.ajax_url,
+                        type: 'POST',
+                        data: {
+                            action: 'ffgc_bulk_action',
+                            nonce: ffgc_ajax.nonce,
+                            bulk_action: action,
+                            certificate_ids: selectedCertificates
+                        },
+                        success: function(response) {
+                            if (response.success) {
+                                FFGC_Admin.showMessage('Bulk action completed successfully', 'success');
+                                location.reload();
+                            } else {
+                                FFGC_Admin.showMessage('Failed to perform bulk action', 'error');
+                            }
+                        },
+                        error: function() {
+                            FFGC_Admin.showMessage('An error occurred', 'error');
+                        }
+                    });
+                }
+            });
+        },
+
+        // Show message
+        showMessage: function(message, type) {
+            var $message = $('<div class="ffgc-message ffgc-message-' + type + '">' + message + '</div>');
+            $('body').append($message);
+            
+            setTimeout(function() {
+                $message.fadeOut(function() {
+                    $(this).remove();
+                });
+            }, 3000);
         }
-    });
-    
-    // Handle keyboard shortcuts
-    $(document).on('keydown', function(e) {
-        // Ctrl/Cmd + Enter to save
-        if ((e.ctrlKey || e.metaKey) && e.keyCode === 13) {
-            $('#publish').click();
-        }
-        
-        // Escape to close modals
-        if (e.keyCode === 27) {
-            $('.ffgc-modal').hide();
-        }
-    });
-    
-    // Initialize tooltips
-    $('[data-tooltip]').each(function() {
-        $(this).attr('title', $(this).data('tooltip'));
-    });
-    
-    // Handle responsive design for admin
-    function handleResponsiveAdmin() {
-        if (window.innerWidth < 768) {
-            $('.ffgc-stats-grid').css('grid-template-columns', '1fr');
-            $('.ffgc-action-buttons').css('flex-direction', 'column');
-        } else {
-            $('.ffgc-stats-grid').css('grid-template-columns', 'repeat(auto-fit, minmax(250px, 1fr))');
-            $('.ffgc-action-buttons').css('flex-direction', 'row');
-        }
+    };
+
+    // Initialize frontend functionality for admin preview
+    if (typeof window.FFGC !== 'undefined') {
+        window.FFGC.init();
     }
-    
-    // Call on load and resize
-    handleResponsiveAdmin();
-    $(window).on('resize', handleResponsiveAdmin);
-    
-    // Handle form validation
-    $('form').on('submit', function() {
-        var requiredFields = $(this).find('[required]');
-        var isValid = true;
-        
-        requiredFields.each(function() {
-            if (!$(this).val()) {
-                $(this).addClass('error');
-                isValid = false;
-            } else {
-                $(this).removeClass('error');
-            }
-        });
-        
-        if (!isValid) {
-            alert('Please fill in all required fields.');
-            return false;
-        }
-        
-        return true;
-    });
-    
-    // Remove error class on input
-    $(document).on('input', '.error', function() {
-        $(this).removeClass('error');
-    });
-    
 }); 

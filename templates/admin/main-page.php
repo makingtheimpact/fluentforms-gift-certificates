@@ -59,7 +59,7 @@ if (!defined('ABSPATH')) {
                     ));
                     
                     foreach ($certificates as $certificate) {
-                        $amount = get_post_meta($certificate->ID, '_amount', true);
+                        $amount = get_post_meta($certificate->ID, '_certificate_amount', true);
                         $total_value += floatval($amount);
                     }
                     
@@ -137,7 +137,7 @@ if (!defined('ABSPATH')) {
                     echo '<ul>';
                     foreach ($recent_certificates as $certificate) {
                         $code = get_post_meta($certificate->ID, '_certificate_code', true);
-                        $amount = get_post_meta($certificate->ID, '_amount', true);
+                        $amount = get_post_meta($certificate->ID, '_certificate_amount', true);
                         echo '<li><strong>' . esc_html($certificate->post_title) . '</strong> - ' . esc_html($code) . ' ($' . number_format($amount, 2) . ')</li>';
                     }
                     echo '</ul>';

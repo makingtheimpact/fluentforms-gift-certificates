@@ -219,6 +219,10 @@ For support, feature requests, or bug reports, please visit our [GitHub reposito
 
 ## Changelog
 
+### Version 1.0.1
+- Unified certificate meta keys
+- Added migration for existing data
+
 ### Version 1.0.0
 - Initial release
 - Fluent Forms Pro integration

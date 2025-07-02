@@ -13,8 +13,26 @@ class FFGC_Webhooks {
         register_rest_route('ffgc/v1', '/purchase', array(
             'methods'             => 'POST',
             'callback'            => array($this, 'handle_purchase'),
-            'permission_callback' => '__return_true',
+            'permission_callback' => array($this, 'verify_token'),
         ));
+    }
+
+    public function verify_token(WP_REST_Request $request) {
+        $token = get_option('ffgc_api_token');
+        if (!$token) {
+            return new WP_Error('ffgc_no_token', __('API token missing', 'fluentforms-gift-certificates'), array('status' => 401));
+        }
+
+        $incoming = $request->get_header('X-FFGC-Token');
+        if (!$incoming) {
+            $incoming = $request->get_param('token');
+        }
+
+        if (!$incoming || !hash_equals($token, $incoming)) {
+            return new WP_Error('ffgc_invalid_token', __('Invalid API token', 'fluentforms-gift-certificates'), array('status' => 403));
+        }
+
+        return true;
     }
 
     public function handle_purchase(WP_REST_Request $request) {

@@ -81,6 +81,7 @@ Fluent Forms Gift Certificates is a comprehensive WordPress plugin that seamless
 2. Connect your preferred gateway in **Fluent Forms → Global Settings → Payment Settings**.
 3. Build purchase and redemption forms with the required fields.
 4. Open **Gift Certificates → Configure Forms**, choose your purchase and redemption forms (hold Ctrl/Cmd for multiple selections), then save.
+5. When setting up an Outgoing Webhook, include the API token (found under **Gift Certificates → Settings**) in a `X-FFGC-Token` header or `token` URL parameter.
 
 == Frequently Asked Questions ==
 

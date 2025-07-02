@@ -14,6 +14,7 @@ jQuery(document).ready(function($) {
             this.initFluentFormsIntegration();
             this.initDesignManagement();
             this.initCertificateManagement();
+            this.initApiTokenField();
         },
 
         // Initialize Fluent Forms integration
@@ -281,6 +282,24 @@ jQuery(document).ready(function($) {
                             FFGC_Admin.showMessage(ffgc_strings.error_occurred, 'error');
                         }
                     });
+                }
+            });
+        },
+
+        initApiTokenField: function() {
+            $(document).on('click', '#ffgc_copy_token', function(e) {
+                e.preventDefault();
+                var $input = $('#ffgc_api_token');
+                $input[0].select();
+                document.execCommand('copy');
+                FFGC_Admin.showMessage(ffgc_strings.copied, 'success');
+            });
+
+            $(document).on('click', '#ffgc_regenerate_token', function(e) {
+                e.preventDefault();
+                if (confirm(ffgc_strings.confirm_regenerate_token)) {
+                    var token = Math.random().toString(36).substring(2) + Math.random().toString(36).substring(2);
+                    $('#ffgc_api_token').val(token);
                 }
             });
         },

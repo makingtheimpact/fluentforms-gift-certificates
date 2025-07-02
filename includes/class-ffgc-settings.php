@@ -93,6 +93,12 @@ class FFGC_Settings {
             'sanitize_callback' => 'intval',
             'default' => 0
         ));
+
+        register_setting('ffgc_settings', 'ffgc_api_token', array(
+            'type' => 'string',
+            'sanitize_callback' => 'sanitize_text_field',
+            'default' => ''
+        ));
         
         // Add settings sections
         add_settings_section(
@@ -120,6 +126,13 @@ class FFGC_Settings {
             'ffgc_field_settings',
             __('Field Display Settings', 'fluentforms-gift-certificates'),
             array($this, 'field_settings_section_callback'),
+            'ffgc_settings'
+        );
+
+        add_settings_section(
+            'ffgc_api_settings',
+            __('API Access', 'fluentforms-gift-certificates'),
+            array($this, 'api_settings_section_callback'),
             'ffgc_settings'
         );
         
@@ -228,6 +241,14 @@ class FFGC_Settings {
             array($this, 'auto_apply_certificates_callback'),
             'ffgc_settings',
             'ffgc_field_settings'
+        );
+
+        add_settings_field(
+            'ffgc_api_token',
+            __('API Token', 'fluentforms-gift-certificates'),
+            array($this, 'api_token_field_callback'),
+            'ffgc_settings',
+            'ffgc_api_settings'
         );
     }
     
@@ -370,6 +391,18 @@ class FFGC_Settings {
         $auto_apply = get_option('ffgc_auto_apply_certificates', false);
         echo '<input type="checkbox" name="ffgc_auto_apply_certificates" value="1" ' . checked(1, $auto_apply, false) . ' />';
         echo '<p class="description">' . __('Automatically apply valid gift certificates when entered (may affect form calculations).', 'fluentforms-gift-certificates') . '</p>';
+    }
+
+    public function api_settings_section_callback() {
+        echo '<p>' . __('Generate and manage your API token for webhook access.', 'fluentforms-gift-certificates') . '</p>';
+    }
+
+    public function api_token_field_callback() {
+        $token = get_option('ffgc_api_token', '');
+        echo '<input type="text" id="ffgc_api_token" name="ffgc_api_token" value="' . esc_attr($token) . '" readonly class="regular-text" />';
+        echo ' <button type="button" class="button" id="ffgc_regenerate_token">' . esc_html__('Regenerate Token', 'fluentforms-gift-certificates') . '</button>';
+        echo ' <button type="button" class="button" id="ffgc_copy_token">' . esc_html__('Copy', 'fluentforms-gift-certificates') . '</button>';
+        echo '<p class="description">' . __('Use this token in your Fluent Forms webhook via the <code>X-FFGC-Token</code> header or a <code>token</code> query parameter.', 'fluentforms-gift-certificates') . '</p>';
     }
     
     public function sanitize_boolean($input) {

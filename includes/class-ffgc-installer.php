@@ -66,6 +66,7 @@ class FFGC_Installer {
             'ffgc_gift_certificate_field_label' => __('Gift Certificate Code', 'fluentforms-gift-certificates'),
             'ffgc_gift_certificate_field_placeholder' => __('Enter your gift certificate code', 'fluentforms-gift-certificates'),
             'ffgc_balance_page' => 0,
+            'ffgc_api_token' => bin2hex(random_bytes(16)),
         );
         
         foreach ($default_options as $key => $value) {
@@ -173,6 +174,7 @@ class FFGC_Installer {
             'ffgc_gift_certificate_field_label',
             'ffgc_gift_certificate_field_placeholder',
             'ffgc_balance_page',
+            'ffgc_api_token',
         );
         
         foreach ($options as $option) {

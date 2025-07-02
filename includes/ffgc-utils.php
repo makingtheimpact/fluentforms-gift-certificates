@@ -49,6 +49,7 @@ if (!function_exists('ffgc_get_script_strings')) {
             'processing'               => __('Processing...', 'fluentforms-gift-certificates'),
             'copied'                   => __('Copied!', 'fluentforms-gift-certificates'),
             'copy_code'                => __('Copy Code', 'fluentforms-gift-certificates'),
+            'confirm_regenerate_token' => __('Generate a new token? Old webhooks will stop working.', 'fluentforms-gift-certificates'),
             'enter_gift_code'          => __('Enter gift certificate code', 'fluentforms-gift-certificates'),
             'select_design_image'      => __('Select Design Image', 'fluentforms-gift-certificates'),
             'use_this_image'           => __('Use this image', 'fluentforms-gift-certificates')

@@ -33,6 +33,14 @@ define('FFGC_PLUGIN_BASENAME', plugin_basename(__FILE__));
 
 require_once FFGC_PLUGIN_DIR . 'includes/ffgc-utils.php';
 
+function ffgc_schedule_cleanup_event() {
+    if (!wp_next_scheduled('ffgc_cleanup_coupons_event')) {
+        $schedule = apply_filters('ffgc_cleanup_schedule', 'daily');
+        wp_schedule_event(time(), $schedule, 'ffgc_cleanup_coupons_event');
+    }
+}
+add_action('init', 'ffgc_schedule_cleanup_event');
+
 // Global flag to prevent multiple initializations
 global $ffgc_initialized;
 $ffgc_initialized = false;
@@ -223,6 +231,9 @@ function ffgc_activate() {
     require_once FFGC_PLUGIN_DIR . 'includes/class-ffgc-installer.php';
     $installer = new FFGC_Installer();
     $installer->install();
+
+    // Schedule cleanup event
+    ffgc_schedule_cleanup_event();
     
     // Force refresh post types
     flush_rewrite_rules();
@@ -233,9 +244,15 @@ register_deactivation_hook(__FILE__, 'ffgc_deactivate');
 function ffgc_deactivate() {
     // Clear rewrite rules
     flush_rewrite_rules();
-    
+
     // Clear any cached data
     wp_cache_flush();
+
+    // Unschedule cleanup event
+    $timestamp = wp_next_scheduled('ffgc_cleanup_coupons_event');
+    if ($timestamp) {
+        wp_unschedule_event($timestamp, 'ffgc_cleanup_coupons_event');
+    }
 }
 
 // Uninstall hook

@@ -27,8 +27,9 @@ class FFGC_Core {
         add_action('wp_ajax_ffgc_check_balance', array($this, 'ajax_check_balance'));
         add_action('wp_ajax_nopriv_ffgc_check_balance', array($this, 'ajax_check_balance'));
 
-        // Cleanup expired or used coupons
-        add_action('init', array($this, 'cleanup_coupons'));
+        // Cleanup expired or used coupons on schedule
+        add_action('ffgc_cleanup_coupons_event', array($this, 'cleanup_coupons'));
+        add_action('init', array($this, 'maybe_cleanup_coupons'));
         
         // Initialize components
         $this->init_components();
@@ -202,6 +203,16 @@ class FFGC_Core {
             'total' => $amount,
             'used' => $amount - $balance
         ));
+    }
+
+    /**
+     * Run coupon cleanup once per day when loaded via init.
+     */
+    public function maybe_cleanup_coupons() {
+        if (false === get_transient('ffgc_cleanup_coupons')) {
+            $this->cleanup_coupons();
+            set_transient('ffgc_cleanup_coupons', 1, DAY_IN_SECONDS);
+        }
     }
 
     /**

@@ -1,0 +1,1243 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-07-02 16:31+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: includes/class-ffgc-forms.php:85 includes/class-ffgc-forms.php:111
+#: includes/class-ffgc-forms.php:1012 templates/admin/forms-page.php:76
+#: templates/admin/main-page.php:162
+msgid "Gift Certificate Design"
+msgstr ""
+
+#: includes/class-ffgc-forms.php:86
+msgid "Select a design for your gift certificate"
+msgstr ""
+
+#: includes/class-ffgc-forms.php:90 includes/class-ffgc-forms.php:131
+msgid "This field is required"
+msgstr ""
+
+#: includes/class-ffgc-forms.php:124 includes/class-ffgc-forms.php:259
+#: includes/class-ffgc-forms.php:1042 includes/ffgc-utils.php:52
+msgid "Enter gift certificate code"
+msgstr ""
+
+#: includes/class-ffgc-forms.php:126 includes/class-ffgc-settings.php:70
+#: includes/class-ffgc-settings.php:352 includes/class-ffgc-shortcodes.php:34
+#: includes/class-ffgc-installer.php:66
+msgid "Gift Certificate Code"
+msgstr ""
+
+#: includes/class-ffgc-forms.php:127
+msgid "Enter your gift certificate code to apply discount"
+msgstr ""
+
+#: includes/class-ffgc-forms.php:151 includes/class-ffgc-forms.php:1035
+#: templates/admin/forms-page.php:94 templates/admin/main-page.php:163
+msgid "Gift Certificate Redemption"
+msgstr ""
+
+#: includes/class-ffgc-forms.php:184 includes/class-ffgc-forms.php:271
+#: includes/class-ffgc-forms.php:1045 includes/ffgc-utils.php:34
+#: includes/class-ffgc-shortcodes.php:22
+msgid "Check Balance"
+msgstr ""
+
+#: includes/class-ffgc-forms.php:228
+#, php-format
+msgid "Range: %s - %s"
+msgstr ""
+
+#: includes/class-ffgc-forms.php:231
+#, php-format
+msgid "Minimum: %s"
+msgstr ""
+
+#: includes/class-ffgc-forms.php:233
+#, php-format
+msgid "Maximum: %s"
+msgstr ""
+
+#: includes/class-ffgc-forms.php:243
+#: templates/admin/meta-boxes/gift-certificate.php:94
+msgid "Select a design"
+msgstr ""
+
+#: includes/class-ffgc-forms.php:426 includes/class-ffgc-webhooks.php:109
+#, php-format
+msgid "Gift Certificate - %s"
+msgstr ""
+
+#: includes/class-ffgc-forms.php:693 includes/ffgc-utils.php:37
+msgid "Please enter a certificate code"
+msgstr ""
+
+#: includes/class-ffgc-forms.php:709
+msgid "Invalid certificate code"
+msgstr ""
+
+#: includes/class-ffgc-forms.php:718
+msgid "Certificate is not active"
+msgstr ""
+
+#: includes/class-ffgc-forms.php:722
+msgid "Certificate has no remaining balance"
+msgstr ""
+
+#: includes/class-ffgc-forms.php:726
+msgid "Certificate has expired"
+msgstr ""
+
+#: includes/class-ffgc-forms.php:732
+#, php-format
+msgid "Certificate valid. Balance: %s"
+msgstr ""
+
+#: includes/class-ffgc-forms.php:1019 includes/ffgc-utils.php:33
+msgid "Loading designs..."
+msgstr ""
+
+#: includes/class-ffgc-settings.php:58 includes/class-ffgc-settings.php:319
+#: includes/class-ffgc-installer.php:64 includes/class-ffgc-email.php:62
+msgid "Your Gift Certificate is Ready!"
+msgstr ""
+
+#: includes/class-ffgc-settings.php:76 includes/class-ffgc-settings.php:358
+#: includes/class-ffgc-shortcodes.php:23 includes/class-ffgc-installer.php:67
+msgid "Enter your gift certificate code"
+msgstr ""
+
+#: includes/class-ffgc-settings.php:100
+msgid "General Settings"
+msgstr ""
+
+#: includes/class-ffgc-settings.php:107
+msgid "Email Settings"
+msgstr ""
+
+#: includes/class-ffgc-settings.php:114
+msgid "Form Integration Settings"
+msgstr ""
+
+#: includes/class-ffgc-settings.php:121
+msgid "Field Display Settings"
+msgstr ""
+
+#: includes/class-ffgc-settings.php:129
+#: templates/admin/meta-boxes/design.php:16
+msgid "Minimum Amount"
+msgstr ""
+
+#: includes/class-ffgc-settings.php:137
+#: templates/admin/meta-boxes/design.php:26
+msgid "Maximum Amount"
+msgstr ""
+
+#: includes/class-ffgc-settings.php:145
+msgid "Currency"
+msgstr ""
+
+#: includes/class-ffgc-settings.php:153
+msgid "Expiry Days"
+msgstr ""
+
+#: includes/class-ffgc-settings.php:161
+msgid "Balance Page"
+msgstr ""
+
+#: includes/class-ffgc-settings.php:169
+msgid "From Name"
+msgstr ""
+
+#: includes/class-ffgc-settings.php:177
+msgid "From Email"
+msgstr ""
+
+#: includes/class-ffgc-settings.php:185
+msgid "Email Subject"
+msgstr ""
+
+#: includes/class-ffgc-settings.php:193 templates/admin/forms-page.php:31
+#: templates/admin/forms-page.php:39
+msgid "Redemption Forms"
+msgstr ""
+
+#: includes/class-ffgc-settings.php:203
+msgid "Field Label"
+msgstr ""
+
+#: includes/class-ffgc-settings.php:211
+msgid "Field Placeholder"
+msgstr ""
+
+#: includes/class-ffgc-settings.php:219
+msgid "Design Grid Columns"
+msgstr ""
+
+#: includes/class-ffgc-settings.php:227
+msgid "Auto-apply Certificates"
+msgstr ""
+
+#: includes/class-ffgc-settings.php:243
+msgid "Configure general gift certificate settings."
+msgstr ""
+
+#: includes/class-ffgc-settings.php:247
+msgid "Configure email settings for gift certificate delivery."
+msgstr ""
+
+#: includes/class-ffgc-settings.php:251
+msgid ""
+"Configure which Fluent Forms should have gift certificate functionality. Use "
+"the new field types in the form builder for better integration."
+msgstr ""
+
+#: includes/class-ffgc-settings.php:255
+msgid "Configure how gift certificate fields are displayed and behave."
+msgstr ""
+
+#: includes/class-ffgc-settings.php:261
+msgid "Minimum amount allowed for gift certificates."
+msgstr ""
+
+#: includes/class-ffgc-settings.php:267
+msgid "Maximum amount allowed for gift certificates."
+msgstr ""
+
+#: includes/class-ffgc-settings.php:286
+msgid "Currency for gift certificate amounts."
+msgstr ""
+
+#: includes/class-ffgc-settings.php:292
+msgid "Number of days until gift certificates expire."
+msgstr ""
+
+#: includes/class-ffgc-settings.php:300
+msgid "— Select —"
+msgstr ""
+
+#: includes/class-ffgc-settings.php:303
+msgid "Page where customers can check gift certificate balances."
+msgstr ""
+
+#: includes/class-ffgc-settings.php:309
+msgid "Name that appears in the \"From\" field of gift certificate emails."
+msgstr ""
+
+#: includes/class-ffgc-settings.php:315
+msgid ""
+"Email address that appears in the \"From\" field of gift certificate emails."
+msgstr ""
+
+#: includes/class-ffgc-settings.php:321
+msgid "Subject line for gift certificate emails."
+msgstr ""
+
+#: includes/class-ffgc-settings.php:328 includes/class-ffgc-settings.php:348
+msgid "This option has been deprecated."
+msgstr ""
+
+#: includes/class-ffgc-settings.php:341
+msgid ""
+"Select forms that will allow users to redeem gift certificates. These forms "
+"should include the Gift Certificate Redemption field type."
+msgstr ""
+
+#: includes/class-ffgc-settings.php:354
+msgid "Label for the gift certificate field in forms."
+msgstr ""
+
+#: includes/class-ffgc-settings.php:360
+msgid "Placeholder text for the gift certificate field in forms."
+msgstr ""
+
+#: includes/class-ffgc-settings.php:366
+msgid "Number of columns in the design selection grid (1-6)."
+msgstr ""
+
+#: includes/class-ffgc-settings.php:372
+msgid ""
+"Automatically apply valid gift certificates when entered (may affect form "
+"calculations)."
+msgstr ""
+
+#: includes/class-ffgc-webhooks.php:30
+msgid "Invalid amount"
+msgstr ""
+
+#: includes/class-ffgc-webhooks.php:38
+msgid "Invalid design selected"
+msgstr ""
+
+#: includes/class-ffgc-webhooks.php:48
+msgid "Amount below allowed minimum"
+msgstr ""
+
+#: includes/class-ffgc-webhooks.php:54
+msgid "Amount exceeds allowed maximum"
+msgstr ""
+
+#: includes/class-ffgc-webhooks.php:70
+msgid "Failed to create certificate"
+msgstr ""
+
+#: includes/ffgc-utils.php:35
+msgid "Checking..."
+msgstr ""
+
+#: includes/ffgc-utils.php:36
+msgid "An error occurred"
+msgstr ""
+
+#: includes/ffgc-utils.php:38
+msgid "Design status updated successfully"
+msgstr ""
+
+#: includes/ffgc-utils.php:39
+msgid "Failed to update design status"
+msgstr ""
+
+#: includes/ffgc-utils.php:40
+msgid "Certificate status updated successfully"
+msgstr ""
+
+#: includes/ffgc-utils.php:41
+msgid "Failed to update certificate status"
+msgstr ""
+
+#: includes/ffgc-utils.php:42
+msgid "Please select certificates to perform this action"
+msgstr ""
+
+#: includes/ffgc-utils.php:43
+msgid "Bulk action completed successfully"
+msgstr ""
+
+#: includes/ffgc-utils.php:44
+msgid "Failed to perform bulk action"
+msgstr ""
+
+#: includes/ffgc-utils.php:45
+#, php-format
+msgid "Are you sure you want to perform this action on %d certificate(s)?"
+msgstr ""
+
+#: includes/ffgc-utils.php:46
+msgid "An error occurred while checking the certificate"
+msgstr ""
+
+#: includes/ffgc-utils.php:47
+msgid "An error occurred while applying the certificate"
+msgstr ""
+
+#: includes/ffgc-utils.php:48 includes/class-ffgc-shortcodes.php:67
+msgid "Checking balance..."
+msgstr ""
+
+#: includes/ffgc-utils.php:49
+msgid "Processing..."
+msgstr ""
+
+#: includes/ffgc-utils.php:50
+msgid "Copied!"
+msgstr ""
+
+#: includes/ffgc-utils.php:51
+msgid "Copy Code"
+msgstr ""
+
+#: includes/ffgc-utils.php:53
+msgid "Select Design Image"
+msgstr ""
+
+#: includes/ffgc-utils.php:54
+msgid "Use this image"
+msgstr ""
+
+#: includes/class-ffgc-post-types.php:28 includes/class-ffgc-core.php:59
+#: includes/class-ffgc-core.php:60 templates/admin/main-page.php:14
+msgid "Gift Certificates"
+msgstr ""
+
+#: includes/class-ffgc-post-types.php:29
+msgid "Gift Certificate"
+msgstr ""
+
+#: includes/class-ffgc-post-types.php:30
+msgid "Add New Certificate"
+msgstr ""
+
+#: includes/class-ffgc-post-types.php:31
+msgid "Add New Gift Certificate"
+msgstr ""
+
+#: includes/class-ffgc-post-types.php:32
+msgid "Edit Gift Certificate"
+msgstr ""
+
+#: includes/class-ffgc-post-types.php:33
+msgid "New Gift Certificate"
+msgstr ""
+
+#: includes/class-ffgc-post-types.php:34
+msgid "View Gift Certificate"
+msgstr ""
+
+#: includes/class-ffgc-post-types.php:35
+msgid "Search Gift Certificates"
+msgstr ""
+
+#: includes/class-ffgc-post-types.php:36
+msgid "No gift certificates found"
+msgstr ""
+
+#: includes/class-ffgc-post-types.php:37
+msgid "No gift certificates found in trash"
+msgstr ""
+
+#: includes/class-ffgc-post-types.php:52
+msgid "Certificate Designs"
+msgstr ""
+
+#: includes/class-ffgc-post-types.php:53
+msgid "Certificate Design"
+msgstr ""
+
+#: includes/class-ffgc-post-types.php:54
+msgid "Add New Design"
+msgstr ""
+
+#: includes/class-ffgc-post-types.php:55
+msgid "Add New Certificate Design"
+msgstr ""
+
+#: includes/class-ffgc-post-types.php:56
+msgid "Edit Certificate Design"
+msgstr ""
+
+#: includes/class-ffgc-post-types.php:57
+msgid "New Certificate Design"
+msgstr ""
+
+#: includes/class-ffgc-post-types.php:58
+msgid "View Certificate Design"
+msgstr ""
+
+#: includes/class-ffgc-post-types.php:59
+msgid "Search Certificate Designs"
+msgstr ""
+
+#: includes/class-ffgc-post-types.php:60
+msgid "No certificate designs found"
+msgstr ""
+
+#: includes/class-ffgc-post-types.php:61
+msgid "No certificate designs found in trash"
+msgstr ""
+
+#: includes/class-ffgc-post-types.php:77
+msgid "Gift Certificate Details"
+msgstr ""
+
+#: includes/class-ffgc-post-types.php:86
+msgid "Design Details"
+msgstr ""
+
+#: includes/class-ffgc-post-types.php:232
+msgid "Code"
+msgstr ""
+
+#: includes/class-ffgc-post-types.php:233
+#: templates/admin/meta-boxes/gift-certificate.php:26
+msgid "Amount"
+msgstr ""
+
+#: includes/class-ffgc-post-types.php:234
+#: includes/class-ffgc-post-types.php:271
+#: templates/admin/meta-boxes/gift-certificate.php:36
+msgid "Status"
+msgstr ""
+
+#: includes/class-ffgc-post-types.php:235
+msgid "Recipient"
+msgstr ""
+
+#: includes/class-ffgc-post-types.php:269
+msgid "Preview"
+msgstr ""
+
+#: includes/class-ffgc-post-types.php:270
+msgid "Amount Range"
+msgstr ""
+
+#: includes/class-ffgc-post-types.php:283
+msgid "No Image"
+msgstr ""
+
+#: includes/class-ffgc-post-types.php:294
+#: templates/admin/meta-boxes/design.php:40 templates/admin/designs-page.php:46
+msgid "Active"
+msgstr ""
+
+#: includes/class-ffgc-post-types.php:294
+#: templates/admin/meta-boxes/design.php:41 templates/admin/designs-page.php:46
+msgid "Inactive"
+msgstr ""
+
+#: includes/class-ffgc-shortcodes.php:21
+msgid "Check Gift Certificate Balance"
+msgstr ""
+
+#: includes/class-ffgc-shortcodes.php:47
+msgid "Usage History"
+msgstr ""
+
+#: includes/class-ffgc-shortcodes.php:63 includes/class-ffgc-core.php:168
+msgid "Please enter a gift certificate code."
+msgstr ""
+
+#: includes/class-ffgc-shortcodes.php:80
+msgid "Certificate Found!"
+msgstr ""
+
+#: includes/class-ffgc-shortcodes.php:81
+msgid "Balance:"
+msgstr ""
+
+#: includes/class-ffgc-shortcodes.php:82
+msgid "Total Value:"
+msgstr ""
+
+#: includes/class-ffgc-shortcodes.php:83
+msgid "Used Amount:"
+msgstr ""
+
+#: includes/class-ffgc-shortcodes.php:97
+msgid "An error occurred. Please try again."
+msgstr ""
+
+#: includes/class-ffgc-shortcodes.php:114
+msgid "Date"
+msgstr ""
+
+#: includes/class-ffgc-shortcodes.php:114
+msgid "Amount Used"
+msgstr ""
+
+#: includes/class-ffgc-shortcodes.php:114
+msgid "Form"
+msgstr ""
+
+#: includes/class-ffgc-shortcodes.php:141 templates/admin/designs-page.php:14
+msgid "Gift Certificate Designs"
+msgstr ""
+
+#: includes/class-ffgc-shortcodes.php:160
+msgid "No gift certificate designs available."
+msgstr ""
+
+#: includes/class-ffgc-installer.php:81
+msgid "Default Design"
+msgstr ""
+
+#: includes/class-ffgc-installer.php:82
+msgid "Default gift certificate design"
+msgstr ""
+
+#: includes/class-ffgc-email.php:288
+#, php-format
+msgid "Gift Certificate %s - %s"
+msgstr ""
+
+#: includes/class-ffgc-email.php:294
+#, php-format
+msgid ""
+"A gift certificate has been %s:\n"
+"\n"
+"Code: %s\n"
+"Amount: $%s\n"
+"Recipient: %s (%s)\n"
+"Date: %s\n"
+"\n"
+"View in admin: %s"
+msgstr ""
+
+#: includes/class-ffgc-email.php:329
+#, php-format
+msgid "Gift Certificate Used - %s"
+msgstr ""
+
+#: includes/class-ffgc-email.php:334
+#, php-format
+msgid ""
+"A gift certificate has been used:\n"
+"\n"
+"Code: %s\n"
+"Amount Used: $%s\n"
+"Remaining Balance: $%s\n"
+"Form ID: %s\n"
+"Date: %s\n"
+"\n"
+"View in admin: %s"
+msgstr ""
+
+#: includes/class-ffgc-core.php:70 includes/class-ffgc-core.php:71
+#: templates/admin/main-page.php:121
+msgid "Settings"
+msgstr ""
+
+#: includes/class-ffgc-core.php:79 includes/class-ffgc-core.php:80
+#: templates/admin/main-page.php:117 templates/admin/main-page.php:165
+msgid "Configure Forms"
+msgstr ""
+
+#: includes/class-ffgc-core.php:88 includes/class-ffgc-core.php:89
+msgid "Designs"
+msgstr ""
+
+#: includes/class-ffgc-core.php:184
+msgid "Invalid gift certificate code."
+msgstr ""
+
+#: includes/class-ffgc-core.php:193
+msgid "This gift certificate is not active."
+msgstr ""
+
+#: includes/class-ffgc-core.php:197
+msgid "This gift certificate has no remaining balance."
+msgstr ""
+
+#: templates/admin/meta-boxes/design.php:20
+msgid "Minimum amount allowed for this design."
+msgstr ""
+
+#: templates/admin/meta-boxes/design.php:30
+msgid "Maximum amount allowed for this design."
+msgstr ""
+
+#: templates/admin/meta-boxes/design.php:36
+#: templates/admin/designs-page.php:108
+msgid "Active Status"
+msgstr ""
+
+#: templates/admin/meta-boxes/design.php:43
+msgid "Only active designs will be available for selection."
+msgstr ""
+
+#: templates/admin/meta-boxes/design.php:49 templates/admin/designs-page.php:77
+msgid "Email Template"
+msgstr ""
+
+#: templates/admin/meta-boxes/design.php:50
+msgid "HTML email template for this design. Use the following placeholders:"
+msgstr ""
+
+#: templates/admin/meta-boxes/design.php:53
+msgid "Recipient name"
+msgstr ""
+
+#: templates/admin/meta-boxes/design.php:54
+msgid "Gift certificate code"
+msgstr ""
+
+#: templates/admin/meta-boxes/design.php:55
+msgid "Certificate amount"
+msgstr ""
+
+#: templates/admin/meta-boxes/design.php:56
+msgid "Personal message (if provided)"
+msgstr ""
+
+#: templates/admin/meta-boxes/design.php:57
+msgid "Expiry date"
+msgstr ""
+
+#: templates/admin/meta-boxes/design.php:58
+msgid "Website name"
+msgstr ""
+
+#: templates/admin/meta-boxes/design.php:59
+msgid "Website URL"
+msgstr ""
+
+#: templates/admin/meta-boxes/design.php:60
+msgid "Balance check page URL"
+msgstr ""
+
+#: templates/admin/meta-boxes/design.php:81
+msgid ""
+"This template will be used for gift certificates with this design. Leave "
+"empty to use the default template."
+msgstr ""
+
+#: templates/admin/meta-boxes/gift-certificate.php:16
+msgid "Certificate Code"
+msgstr ""
+
+#: templates/admin/meta-boxes/gift-certificate.php:20
+msgid "Unique code for this gift certificate. Auto-generated if left empty."
+msgstr ""
+
+#: templates/admin/meta-boxes/gift-certificate.php:30
+msgid "Total value of the gift certificate."
+msgstr ""
+
+#: templates/admin/meta-boxes/gift-certificate.php:40
+msgid "Unused"
+msgstr ""
+
+#: templates/admin/meta-boxes/gift-certificate.php:41
+msgid "Used"
+msgstr ""
+
+#: templates/admin/meta-boxes/gift-certificate.php:42
+msgid "Expired"
+msgstr ""
+
+#: templates/admin/meta-boxes/gift-certificate.php:44
+msgid "Current status of the gift certificate."
+msgstr ""
+
+#: templates/admin/meta-boxes/gift-certificate.php:50
+msgid "Used Amount"
+msgstr ""
+
+#: templates/admin/meta-boxes/gift-certificate.php:54
+msgid "Amount that has been used from this certificate."
+msgstr ""
+
+#: templates/admin/meta-boxes/gift-certificate.php:60
+msgid "Recipient Name"
+msgstr ""
+
+#: templates/admin/meta-boxes/gift-certificate.php:64
+msgid "Name of the person receiving the gift certificate."
+msgstr ""
+
+#: templates/admin/meta-boxes/gift-certificate.php:70
+msgid "Recipient Email"
+msgstr ""
+
+#: templates/admin/meta-boxes/gift-certificate.php:74
+msgid "Email address where the gift certificate will be sent."
+msgstr ""
+
+#: templates/admin/meta-boxes/gift-certificate.php:80
+msgid "Personal Message"
+msgstr ""
+
+#: templates/admin/meta-boxes/gift-certificate.php:84
+msgid "Personal message to include with the gift certificate."
+msgstr ""
+
+#: templates/admin/meta-boxes/gift-certificate.php:90
+msgid "Design"
+msgstr ""
+
+#: templates/admin/meta-boxes/gift-certificate.php:115
+msgid "Design template for this gift certificate."
+msgstr ""
+
+#: templates/admin/meta-boxes/gift-certificate.php:121
+msgid "Submission ID"
+msgstr ""
+
+#: templates/admin/meta-boxes/gift-certificate.php:125
+msgid "Related Fluent Forms submission ID (if applicable)."
+msgstr ""
+
+#: templates/admin/meta-boxes/gift-certificate.php:131
+msgid "Expiry Date"
+msgstr ""
+
+#: templates/admin/meta-boxes/gift-certificate.php:135
+msgid "Date when this gift certificate expires."
+msgstr ""
+
+#: templates/admin/meta-boxes/gift-certificate.php:142
+msgid "Actions"
+msgstr ""
+
+#: templates/admin/meta-boxes/gift-certificate.php:146
+msgid "Resend Email"
+msgstr ""
+
+#: templates/admin/meta-boxes/gift-certificate.php:151
+msgid "Resend the gift certificate email to the recipient."
+msgstr ""
+
+#: templates/admin/meta-boxes/gift-certificate.php:173
+msgid "Email sent successfully!"
+msgstr ""
+
+#: templates/admin/meta-boxes/gift-certificate.php:175
+msgid "Failed to send email."
+msgstr ""
+
+#: templates/admin/meta-boxes/gift-certificate.php:179
+msgid "An error occurred."
+msgstr ""
+
+#: templates/admin/settings-page.php:14
+msgid "Gift Certificate Settings"
+msgstr ""
+
+#: templates/admin/settings-page.php:25
+msgid "How to Use"
+msgstr ""
+
+#: templates/admin/settings-page.php:28
+msgid "1. Enable Forms"
+msgstr ""
+
+#: templates/admin/settings-page.php:29
+msgid ""
+"Select which Fluent Forms should have gift certificate functionality. Forms "
+"with amount/price fields will be treated as purchase forms, while others "
+"will be application forms."
+msgstr ""
+
+#: templates/admin/settings-page.php:33
+msgid "2. Enable Fields & Payments"
+msgstr ""
+
+#: templates/admin/settings-page.php:34
+msgid ""
+"Turn on the Gift Certificate fields and connect your payment gateway in "
+"Fluent Forms → Global Settings."
+msgstr ""
+
+#: templates/admin/settings-page.php:38
+msgid "3. Create Designs"
+msgstr ""
+
+#: templates/admin/settings-page.php:39
+msgid ""
+"Create gift certificate designs with different themes, images, and email "
+"templates. Each design can have its own minimum and maximum amount range."
+msgstr ""
+
+#: templates/admin/settings-page.php:43
+msgid "4. Use Shortcodes"
+msgstr ""
+
+#: templates/admin/settings-page.php:45
+msgid "Check certificate balance"
+msgstr ""
+
+#: templates/admin/settings-page.php:46
+msgid "Show available designs"
+msgstr ""
+
+#: templates/admin/settings-page.php:51
+msgid "5. Monitor Usage"
+msgstr ""
+
+#: templates/admin/settings-page.php:52
+msgid ""
+"Track gift certificate usage, balances, and expiration dates from the main "
+"admin dashboard."
+msgstr ""
+
+#: templates/admin/forms-page.php:26
+msgid "Gift Certificate Forms Configuration"
+msgstr ""
+
+#: templates/admin/forms-page.php:32
+msgid ""
+"Configure forms that will allow users to redeem gift certificates. These "
+"forms should include the Gift Certificate Redemption field type."
+msgstr ""
+
+#: templates/admin/forms-page.php:50
+msgid "Hold Ctrl/Cmd to select multiple forms. These forms should include:"
+msgstr ""
+
+#: templates/admin/forms-page.php:53
+msgid "Gift Certificate Redemption field type"
+msgstr ""
+
+#: templates/admin/forms-page.php:54
+msgid "Product/service selection fields"
+msgstr ""
+
+#: templates/admin/forms-page.php:55
+msgid "Payment fields (if additional payment is required)"
+msgstr ""
+
+#: templates/admin/forms-page.php:61
+msgid "Save Redemption Forms"
+msgstr ""
+
+#: templates/admin/forms-page.php:66
+msgid "How to Set Up Forms"
+msgstr ""
+
+#: templates/admin/forms-page.php:69
+msgid "Purchase Form Setup"
+msgstr ""
+
+#: templates/admin/forms-page.php:71
+msgid ""
+"Enable the Gift Certificate fields in Fluent Forms → Global Settings → "
+"Elements"
+msgstr ""
+
+#: templates/admin/forms-page.php:72
+msgid ""
+"Connect your payment gateway in Fluent Forms → Global Settings → Payment "
+"Settings"
+msgstr ""
+
+#: templates/admin/forms-page.php:73 templates/admin/forms-page.php:91
+msgid "Create a new Fluent Form or edit an existing one"
+msgstr ""
+
+#: templates/admin/forms-page.php:74 templates/admin/forms-page.php:92
+msgid "Add the following field types:"
+msgstr ""
+
+#: templates/admin/forms-page.php:76
+msgid "Allows users to select a design"
+msgstr ""
+
+#: templates/admin/forms-page.php:77
+msgid "Text Input"
+msgstr ""
+
+#: templates/admin/forms-page.php:77
+msgid "For recipient name (name: recipient_name)"
+msgstr ""
+
+#: templates/admin/forms-page.php:78
+msgid "Email Input"
+msgstr ""
+
+#: templates/admin/forms-page.php:78
+msgid "For recipient email (name: recipient_email)"
+msgstr ""
+
+#: templates/admin/forms-page.php:79
+msgid "Textarea"
+msgstr ""
+
+#: templates/admin/forms-page.php:79
+msgid "For personal message (name: personal_message)"
+msgstr ""
+
+#: templates/admin/forms-page.php:80
+msgid "Custom Payment Amount"
+msgstr ""
+
+#: templates/admin/forms-page.php:80
+msgid "For the gift certificate amount"
+msgstr ""
+
+#: templates/admin/forms-page.php:81
+msgid "Payment Method"
+msgstr ""
+
+#: templates/admin/forms-page.php:81
+msgid "For payment processing"
+msgstr ""
+
+#: templates/admin/forms-page.php:84
+msgid ""
+"Configure the Custom Payment Amount field with appropriate minimum/maximum "
+"values"
+msgstr ""
+
+#: templates/admin/forms-page.php:85
+msgid "Set up payment methods and gateways"
+msgstr ""
+
+#: templates/admin/forms-page.php:89
+msgid "Redemption Form Setup"
+msgstr ""
+
+#: templates/admin/forms-page.php:94
+msgid "Allows users to enter and validate certificate codes"
+msgstr ""
+
+#: templates/admin/forms-page.php:95
+msgid "Product/Service Selection"
+msgstr ""
+
+#: templates/admin/forms-page.php:95
+msgid "For items to purchase with the certificate"
+msgstr ""
+
+#: templates/admin/forms-page.php:96
+msgid "Payment Fields"
+msgstr ""
+
+#: templates/admin/forms-page.php:96
+msgid "If additional payment is required beyond certificate balance"
+msgstr ""
+
+#: templates/admin/forms-page.php:99
+msgid "Configure the Gift Certificate Redemption field settings"
+msgstr ""
+
+#: templates/admin/forms-page.php:100
+msgid "Set up form calculations to handle certificate discounts"
+msgstr ""
+
+#: templates/admin/forms-page.php:101
+msgid "Save the form and add it to the Redemption Forms list above"
+msgstr ""
+
+#: templates/admin/forms-page.php:107
+msgid "Field Type Reference"
+msgstr ""
+
+#: templates/admin/forms-page.php:110
+msgid "Gift Certificate Design Field"
+msgstr ""
+
+#: templates/admin/forms-page.php:111
+msgid ""
+"This field displays available gift certificate designs in a grid or dropdown "
+"format."
+msgstr ""
+
+#: templates/admin/forms-page.php:113 templates/admin/forms-page.php:123
+msgid "Settings:"
+msgstr ""
+
+#: templates/admin/forms-page.php:115
+msgid "Display Type"
+msgstr ""
+
+#: templates/admin/forms-page.php:115
+msgid "Grid or Dropdown"
+msgstr ""
+
+#: templates/admin/forms-page.php:116
+msgid "Columns"
+msgstr ""
+
+#: templates/admin/forms-page.php:116
+msgid "Number of columns in grid (1-6)"
+msgstr ""
+
+#: templates/admin/forms-page.php:117
+msgid "Show Design Info"
+msgstr ""
+
+#: templates/admin/forms-page.php:117
+msgid "Display price range and description"
+msgstr ""
+
+#: templates/admin/forms-page.php:120
+msgid "Gift Certificate Redemption Field"
+msgstr ""
+
+#: templates/admin/forms-page.php:121
+msgid ""
+"This field allows users to enter gift certificate codes and check their "
+"balance."
+msgstr ""
+
+#: templates/admin/forms-page.php:125
+msgid "Show Balance Check"
+msgstr ""
+
+#: templates/admin/forms-page.php:125
+msgid "Display \"Check Balance\" button"
+msgstr ""
+
+#: templates/admin/forms-page.php:126
+msgid "Auto Apply"
+msgstr ""
+
+#: templates/admin/forms-page.php:126
+msgid "Automatically apply valid certificates"
+msgstr ""
+
+#: templates/admin/designs-page.php:18
+msgid "Manage Certificate Designs"
+msgstr ""
+
+#: templates/admin/designs-page.php:20
+msgid "Create New Design"
+msgstr ""
+
+#: templates/admin/designs-page.php:36
+msgid "No designs found. "
+msgstr ""
+
+#: templates/admin/designs-page.php:37 templates/admin/main-page.php:105
+msgid "Create Design"
+msgstr ""
+
+#: templates/admin/designs-page.php:66
+msgid "Amount Range:"
+msgstr ""
+
+#: templates/admin/designs-page.php:76
+msgid "Edit"
+msgstr ""
+
+#: templates/admin/designs-page.php:89
+msgid "Design Tips"
+msgstr ""
+
+#: templates/admin/designs-page.php:93
+msgid "Email Templates"
+msgstr ""
+
+#: templates/admin/designs-page.php:94
+msgid ""
+"Use HTML and CSS to create beautiful email templates. Available "
+"placeholders: {recipient_name}, {certificate_code}, {amount}, "
+"{personal_message}, {expiry_date}, {site_name}, {site_url}, {balance_url}"
+msgstr ""
+
+#: templates/admin/designs-page.php:98
+msgid "Amount Ranges"
+msgstr ""
+
+#: templates/admin/designs-page.php:99
+msgid ""
+"Set different minimum and maximum amounts for each design to offer various "
+"gift certificate options to your customers."
+msgstr ""
+
+#: templates/admin/designs-page.php:103
+msgid "Featured Images"
+msgstr ""
+
+#: templates/admin/designs-page.php:104
+msgid ""
+"Add featured images to your designs to showcase them in the frontend "
+"shortcodes and admin interface."
+msgstr ""
+
+#: templates/admin/designs-page.php:109
+msgid ""
+"Only active designs will be available for selection in purchase forms and "
+"shortcodes."
+msgstr ""
+
+#: templates/admin/main-page.php:19
+msgid "Total Certificates"
+msgstr ""
+
+#: templates/admin/main-page.php:30
+msgid "Active Certificates"
+msgstr ""
+
+#: templates/admin/main-page.php:52
+msgid "Total Value"
+msgstr ""
+
+#: templates/admin/main-page.php:74
+msgid "Active Designs"
+msgstr ""
+
+#: templates/admin/main-page.php:97
+msgid "Quick Actions"
+msgstr ""
+
+#: templates/admin/main-page.php:101
+msgid "Create Certificate"
+msgstr ""
+
+#: templates/admin/main-page.php:109
+msgid "View All Certificates"
+msgstr ""
+
+#: templates/admin/main-page.php:113
+msgid "View All Designs"
+msgstr ""
+
+#: templates/admin/main-page.php:127
+msgid "Recent Activity"
+msgstr ""
+
+#: templates/admin/main-page.php:148
+msgid "No certificates found."
+msgstr ""
+
+#: templates/admin/main-page.php:155
+msgid "Shortcodes & Integration"
+msgstr ""
+
+#: templates/admin/main-page.php:159
+msgid "Fluent Forms Integration"
+msgstr ""
+
+#: templates/admin/main-page.php:160
+msgid "Use the new field types in Fluent Forms:"
+msgstr ""
+
+#: templates/admin/main-page.php:162
+msgid "Visual design selection with grid layout"
+msgstr ""
+
+#: templates/admin/main-page.php:163
+msgid "Code entry with balance checking"
+msgstr ""
+
+#: templates/admin/main-page.php:169
+msgid "Balance Checker"
+msgstr ""
+
+#: templates/admin/main-page.php:171
+msgid "Displays a form to check gift certificate balance."
+msgstr ""
+
+#: templates/admin/main-page.php:176
+msgid "Designs Showcase"
+msgstr ""
+
+#: templates/admin/main-page.php:178
+msgid "Displays available gift certificate designs."
+msgstr ""
+
+#: fluentforms-gift-certificates.php:79 fluentforms-gift-certificates.php:190
+msgid ""
+"Fluent Forms Gift Certificates requires Fluent Forms to be installed and "
+"activated."
+msgstr ""
+
+#: fluentforms-gift-certificates.php:93
+msgid ""
+"Fluent Forms Gift Certificates detected Fluent Forms but the database tables "
+"are not properly set up. Please deactivate and reactivate Fluent Forms."
+msgstr ""
+
+#: fluentforms-gift-certificates.php:103
+msgid ""
+"Fluent Forms Gift Certificates is waiting for Fluent Forms to fully load..."
+msgstr ""
+
+#: fluentforms-gift-certificates.php:114
+msgid ""
+"Fluent Forms Gift Certificates is checking for Fluent Forms compatibility..."
+msgstr ""
+
+#: fluentforms-gift-certificates.php:191 fluentforms-gift-certificates.php:205
+msgid "Plugin Activation Error"
+msgstr ""
+
+#: fluentforms-gift-certificates.php:204
+msgid ""
+"Fluent Forms Gift Certificates detected Fluent Forms but the database tables "
+"are not properly set up. Please deactivate and reactivate Fluent Forms first."
+msgstr ""

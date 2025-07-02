@@ -230,6 +230,25 @@ add_filter('fluentform_editor_components', function($components) {
 
 For support, feature requests, or bug reports, please visit our [GitHub repository](https://github.com/your-repo/fluentforms-gift-certificates).
 
+## Translating
+
+To contribute translations:
+
+1. Make sure the template file is current by running:
+   ```bash
+   wp i18n make-pot . languages/fluentforms-gift-certificates.pot
+   ```
+   If `wp` isn't available you can generate the POT file with `xgettext` as used in this repository.
+2. Create a new `.po` file for your locale. For example, to start Spanish translations:
+   ```bash
+   msginit --input=languages/fluentforms-gift-certificates.pot --locale=es_ES --output-file=languages/es_ES.po
+   ```
+3. After translating, compile the `.mo` file:
+   ```bash
+   msgfmt languages/es_ES.po --output-file=languages/es_ES.mo
+   ```
+4. Submit the `.po` and `.mo` files in a pull request.
+
 ## Changelog
 
 ### Version 1.0.3

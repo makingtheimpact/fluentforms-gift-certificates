@@ -146,6 +146,7 @@ function ffgc_init() {
     require_once FFGC_PLUGIN_DIR . 'includes/class-ffgc-settings.php';
     require_once FFGC_PLUGIN_DIR . 'includes/class-ffgc-forms.php';
     require_once FFGC_PLUGIN_DIR . 'includes/class-ffgc-email.php';
+    require_once FFGC_PLUGIN_DIR . 'includes/class-ffgc-webhooks.php';
     require_once FFGC_PLUGIN_DIR . 'includes/class-ffgc-shortcodes.php';
     
     // Initialize core plugin

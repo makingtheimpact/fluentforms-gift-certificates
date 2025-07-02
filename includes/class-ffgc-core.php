@@ -43,7 +43,10 @@ class FFGC_Core {
         
         // Initialize email system
         new FFGC_Email();
-        
+
+        // Initialize REST webhooks
+        new FFGC_Webhooks();
+
         // Initialize shortcodes
         new FFGC_Shortcodes();
     }

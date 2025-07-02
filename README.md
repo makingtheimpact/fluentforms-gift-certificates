@@ -153,6 +153,20 @@ $.ajax({
 });
 ```
 
+### Purchase Webhook
+To trigger certificate generation via the REST API, add an **Outgoing Webhook** action to your purchase form:
+
+1. In the form's **Marketing & CRM Integrations** tab choose **Outgoing Webhook**.
+2. Set the request URL to `https://your-site.com/wp-json/ffgc/v1/purchase`.
+3. Use the `POST` method and send data as `JSON` or form fields.
+4. Map your form fields:
+   - `design_id` → the field containing the design choice (select, radio, or Gift Certificate Design field).
+   - `recipient_name` → text input for the recipient's name.
+   - `recipient_email` → email input for the recipient.
+   - `amount` → payment or number field with the purchase amount.
+   - `personal_message` → optional textarea for a message.
+5. Save the integration and test the form.
+
 ## Hooks and Filters
 
 ### Actions

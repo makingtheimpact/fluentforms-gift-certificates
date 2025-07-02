@@ -63,7 +63,6 @@ class FFGC_Installer {
             'ffgc_email_from_address' => get_option('admin_email'),
             'ffgc_email_subject' => __('Your Gift Certificate is Ready!', 'fluentforms-gift-certificates'),
             'ffgc_default_email_template' => $this->get_default_email_template(),
-            'ffgc_forms_enabled' => array(),
             'ffgc_gift_certificate_field_label' => __('Gift Certificate Code', 'fluentforms-gift-certificates'),
             'ffgc_gift_certificate_field_placeholder' => __('Enter your gift certificate code', 'fluentforms-gift-certificates'),
         );
@@ -168,7 +167,6 @@ class FFGC_Installer {
             'ffgc_email_from_address',
             'ffgc_email_subject',
             'ffgc_default_email_template',
-            'ffgc_forms_enabled',
             'ffgc_gift_certificate_field_label',
             'ffgc_gift_certificate_field_placeholder',
         );

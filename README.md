@@ -231,6 +231,10 @@ For support, feature requests, or bug reports, please visit our [GitHub reposito
 
 ## Changelog
 
+### Version 1.0.3
+- Replaced `_certificate_status` meta key with `_status`
+- Migrated existing posts to the new meta key
+
 ### Version 1.0.2
 - Moved certificate usage logs to a dedicated database table
 - Added migration of legacy log meta

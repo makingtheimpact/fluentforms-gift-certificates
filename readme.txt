@@ -4,7 +4,7 @@ Tags: fluent-forms, gift-certificates, ecommerce, forms, email, certificates
 Requires at least: 5.0
 Tested up to: 6.4
 Requires PHP: 7.4
-Stable tag: 1.0.2
+Stable tag: 1.0.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -129,6 +129,10 @@ Yes! Simply enable the forms you want to use in the plugin settings. Forms with 
 
 == Changelog ==
 
+= 1.0.3 =
+* Replaced `_certificate_status` meta key with `_status`
+* Migrated existing posts to the new meta key
+
 = 1.0.2 =
 * Moved usage logs from post meta to a custom table
 * Migrated existing logs during upgrade
@@ -149,6 +153,9 @@ Yes! Simply enable the forms you want to use in the plugin settings. Forms with 
 * Settings configuration
 
 == Upgrade Notice ==
+
+= 1.0.3 =
+Meta key changed from `_certificate_status` to `_status`. Run the upgrade to copy existing data.
 
 = 1.0.2 =
 Database changes for usage logs. Run the upgrade to migrate data.

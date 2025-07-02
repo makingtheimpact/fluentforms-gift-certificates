@@ -96,7 +96,7 @@ class FFGC_Post_Types {
         
         $code = get_post_meta($post->ID, '_certificate_code', true);
         $amount = get_post_meta($post->ID, '_certificate_amount', true);
-        $status = get_post_meta($post->ID, '_certificate_status', true);
+        $status = get_post_meta($post->ID, '_status', true);
         $used_amount = get_post_meta($post->ID, '_certificate_used_amount', true);
         $recipient_email = get_post_meta($post->ID, '_recipient_email', true);
         $recipient_name = get_post_meta($post->ID, '_recipient_name', true);
@@ -157,7 +157,7 @@ class FFGC_Post_Types {
         $fields = array(
             '_certificate_code' => 'text',
             '_certificate_amount' => 'float',
-            '_certificate_status' => 'text',
+            '_status' => 'text',
             '_certificate_used_amount' => 'float',
             '_recipient_email' => 'email',
             '_recipient_name' => 'text',
@@ -250,7 +250,7 @@ class FFGC_Post_Types {
                 echo esc_html(number_format($amount, 2)) . ' (' . esc_html(number_format($used, 2)) . ' used)';
                 break;
             case 'status':
-                $status = get_post_meta($post_id, '_certificate_status', true);
+                $status = get_post_meta($post_id, '_status', true);
                 $status_class = $status === 'used' ? 'used' : 'unused';
                 echo '<span class="ffgc-status ' . esc_attr($status_class) . '">' . esc_html(ucfirst($status)) . '</span>';
                 break;

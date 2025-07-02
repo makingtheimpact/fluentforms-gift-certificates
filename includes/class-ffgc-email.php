@@ -12,7 +12,7 @@ if (!defined('ABSPATH')) {
 class FFGC_Email {
     
     public function __construct() {
-        add_filter('wp_mail_content_type', array($this, 'set_html_content_type'));
+        // Intentionally left blank. Content type filter will be added per email.
     }
     
     /**
@@ -66,10 +66,13 @@ class FFGC_Email {
             'From: ' . $from_name . ' <' . $from_email . '>'
         );
         
+        // Ensure HTML content type only for this email
+        add_filter('wp_mail_content_type', array($this, 'set_html_content_type'));
+
         // Send email
         $sent = wp_mail($recipient_email, $subject, $email_content, $headers);
-        
-        // Reset content type
+
+        // Reset content type immediately after sending
         remove_filter('wp_mail_content_type', array($this, 'set_html_content_type'));
         
         return $sent;

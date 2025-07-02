@@ -115,6 +115,8 @@ class FFGC_Webhooks {
         $certificate_id = wp_insert_post($post_data);
 
         if ($certificate_id) {
+            $expiry = date('Y-m-d H:i:s', strtotime('+' . get_option('ffgc_expiry_days', 365) . ' days'));
+
             update_post_meta($certificate_id, '_certificate_code', $code);
             update_post_meta($certificate_id, '_certificate_amount', $data['amount']);
             update_post_meta($certificate_id, '_certificate_balance', $data['amount']);
@@ -122,8 +124,12 @@ class FFGC_Webhooks {
             update_post_meta($certificate_id, '_recipient_email', $data['recipient_email']);
             update_post_meta($certificate_id, '_design_id', $data['design_id']);
             update_post_meta($certificate_id, '_created_date', current_time('mysql'));
-            update_post_meta($certificate_id, '_expiry_date', date('Y-m-d H:i:s', strtotime('+' . get_option('ffgc_expiry_days', 365) . ' days')));
+            update_post_meta($certificate_id, '_expiry_date', $expiry);
             update_post_meta($certificate_id, '_status', 'active');
+
+            // Create matching Fluent Forms coupon
+            ffgc_create_coupon($code, $data['amount'], $expiry);
+
             return $certificate_id;
         }
         return false;

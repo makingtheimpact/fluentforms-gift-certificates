@@ -26,6 +26,9 @@ class FFGC_Core {
         // AJAX hooks
         add_action('wp_ajax_ffgc_check_balance', array($this, 'ajax_check_balance'));
         add_action('wp_ajax_nopriv_ffgc_check_balance', array($this, 'ajax_check_balance'));
+
+        // Cleanup expired or used coupons
+        add_action('init', array($this, 'cleanup_coupons'));
         
         // Initialize components
         $this->init_components();
@@ -200,4 +203,35 @@ class FFGC_Core {
             'used' => $amount - $balance
         ));
     }
-} 
+
+    /**
+     * Remove Fluent Forms coupons for expired or depleted certificates.
+     */
+    public function cleanup_coupons() {
+        $certificates = get_posts(array(
+            'post_type'      => 'ffgc_cert',
+            'post_status'    => 'publish',
+            'posts_per_page' => -1,
+            'meta_query'     => array(
+                'relation' => 'OR',
+                array(
+                    'key'     => '_certificate_balance',
+                    'value'   => 0,
+                    'compare' => '<=',
+                    'type'    => 'NUMERIC'
+                ),
+                array(
+                    'key'     => '_expiry_date',
+                    'value'   => current_time('mysql'),
+                    'compare' => '<',
+                    'type'    => 'DATETIME'
+                )
+            )
+        ));
+
+        foreach ($certificates as $cert) {
+            $code = get_post_meta($cert->ID, '_certificate_code', true);
+            ffgc_delete_coupon($code);
+        }
+    }
+}

@@ -42,6 +42,8 @@ class FFGC_Forms {
         add_action('admin_enqueue_scripts', array($this, 'admin_scripts'));
         add_action('wp_enqueue_scripts', array($this, 'frontend_scripts'));
         add_action('save_post_ffgc_design', array($this, 'clear_design_cache'));
+        add_action('delete_post', array($this, 'maybe_clear_design_cache'));
+        add_action('trashed_post', array($this, 'maybe_clear_design_cache'));
     }
     
     /**
@@ -720,6 +722,15 @@ class FFGC_Forms {
     public function clear_design_cache() {
         delete_transient('ffgc_active_design_ids');
         delete_transient('ffgc_active_design_data');
+    }
+
+    /**
+     * Clear design cache when a design is deleted or trashed
+     */
+    public function maybe_clear_design_cache($post_id) {
+        if (get_post_type($post_id) === 'ffgc_design') {
+            $this->clear_design_cache();
+        }
     }
     
     /**

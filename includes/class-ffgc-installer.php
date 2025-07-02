@@ -66,6 +66,7 @@ class FFGC_Installer {
             'ffgc_forms_enabled' => array(),
             'ffgc_gift_certificate_field_label' => __('Gift Certificate Code', 'fluentforms-gift-certificates'),
             'ffgc_gift_certificate_field_placeholder' => __('Enter your gift certificate code', 'fluentforms-gift-certificates'),
+            'ffgc_balance_page' => 0,
         );
         
         foreach ($default_options as $key => $value) {
@@ -135,7 +136,9 @@ class FFGC_Installer {
                 <li>Enter the code above during checkout</li>
                 <li>Enjoy your purchase!</li>
             </ol>
-            
+
+            <p>You can check your remaining balance at <a href="{balance_url}">{balance_url}</a>.</p>
+
             {personal_message}
             
             <p>This gift certificate is valid until {expiry_date}.</p>
@@ -171,6 +174,7 @@ class FFGC_Installer {
             'ffgc_forms_enabled',
             'ffgc_gift_certificate_field_label',
             'ffgc_gift_certificate_field_placeholder',
+            'ffgc_balance_page',
         );
         
         foreach ($options as $option) {

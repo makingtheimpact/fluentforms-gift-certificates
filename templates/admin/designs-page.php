@@ -91,7 +91,7 @@ if (!defined('ABSPATH')) {
         <div class="ffgc-tips-grid">
             <div class="ffgc-tip">
                 <h3><?php _e('Email Templates', 'fluentforms-gift-certificates'); ?></h3>
-                <p><?php _e('Use HTML and CSS to create beautiful email templates. Available placeholders: {recipient_name}, {certificate_code}, {amount}, {personal_message}, {expiry_date}, {site_name}, {site_url}', 'fluentforms-gift-certificates'); ?></p>
+                <p><?php _e('Use HTML and CSS to create beautiful email templates. Available placeholders: {recipient_name}, {certificate_code}, {amount}, {personal_message}, {expiry_date}, {site_name}, {site_url}, {balance_url}', 'fluentforms-gift-certificates'); ?></p>
             </div>
             
             <div class="ffgc-tip">

@@ -52,7 +52,8 @@ class FFGC_Email {
             'personal_message' => $this->format_personal_message($personal_message),
             'expiry_date' => date('F j, Y', strtotime($expiry_date)),
             'site_name' => get_bloginfo('name'),
-            'site_url' => get_site_url()
+            'site_url' => get_site_url(),
+            'balance_url' => $this->get_balance_url()
         ));
         
         // Email headers
@@ -104,6 +105,17 @@ class FFGC_Email {
     
     public function set_html_content_type() {
         return 'text/html';
+    }
+
+    private function get_balance_url() {
+        $page_id = get_option('ffgc_balance_page', 0);
+        if ($page_id) {
+            $url = get_permalink($page_id);
+            if ($url) {
+                return $url;
+            }
+        }
+        return get_site_url();
     }
     
     private function get_default_template() {
@@ -234,11 +246,13 @@ class FFGC_Email {
                 <ol>
                     <li>Visit our website at <a href="{site_url}">{site_name}</a></li>
                     <li>Add items to your cart</li>
-                    <li>Enter the code above during checkout</li>
-                    <li>Enjoy your purchase!</li>
+                <li>Enter the code above during checkout</li>
+                <li>Enjoy your purchase!</li>
                 </ol>
             </div>
-            
+
+            <p>Check your remaining balance at <a href="{balance_url}">{balance_url}</a>.</p>
+
             {personal_message}
             
             <div class="expiry-notice">

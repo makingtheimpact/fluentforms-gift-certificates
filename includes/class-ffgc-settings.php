@@ -99,6 +99,12 @@ class FFGC_Settings {
             'sanitize_callback' => array($this, 'sanitize_boolean'),
             'default' => false
         ));
+
+        register_setting('ffgc_settings', 'ffgc_balance_page', array(
+            'type' => 'integer',
+            'sanitize_callback' => 'intval',
+            'default' => 0
+        ));
         
         // Add settings sections
         add_settings_section(
@@ -158,6 +164,14 @@ class FFGC_Settings {
             'ffgc_expiry_days',
             __('Expiry Days', 'fluentforms-gift-certificates'),
             array($this, 'expiry_days_field_callback'),
+            'ffgc_settings',
+            'ffgc_general_settings'
+        );
+
+        add_settings_field(
+            'ffgc_balance_page',
+            __('Balance Page', 'fluentforms-gift-certificates'),
+            array($this, 'balance_page_field_callback'),
             'ffgc_settings',
             'ffgc_general_settings'
         );
@@ -302,6 +316,17 @@ class FFGC_Settings {
         $value = get_option('ffgc_expiry_days', 365);
         echo '<input type="number" min="1" name="ffgc_expiry_days" value="' . esc_attr($value) . '" class="small-text" />';
         echo '<p class="description">' . __('Number of days until gift certificates expire.', 'fluentforms-gift-certificates') . '</p>';
+    }
+
+    public function balance_page_field_callback() {
+        $page_id = get_option('ffgc_balance_page', 0);
+        wp_dropdown_pages(array(
+            'name' => 'ffgc_balance_page',
+            'selected' => $page_id,
+            'show_option_none' => __('— Select —', 'fluentforms-gift-certificates'),
+            'option_none_value' => '0'
+        ));
+        echo '<p class="description">' . __('Page where customers can check gift certificate balances.', 'fluentforms-gift-certificates') . '</p>';
     }
     
     public function email_from_name_field_callback() {

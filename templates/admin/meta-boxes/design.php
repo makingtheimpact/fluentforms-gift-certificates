@@ -56,7 +56,8 @@ if (!defined('ABSPATH')) {
         <code>{personal_message}</code> - <?php _e('Personal message (if provided)', 'fluentforms-gift-certificates'); ?><br>
         <code>{expiry_date}</code> - <?php _e('Expiry date', 'fluentforms-gift-certificates'); ?><br>
         <code>{site_name}</code> - <?php _e('Website name', 'fluentforms-gift-certificates'); ?><br>
-        <code>{site_url}</code> - <?php _e('Website URL', 'fluentforms-gift-certificates'); ?>
+        <code>{site_url}</code> - <?php _e('Website URL', 'fluentforms-gift-certificates'); ?><br>
+        <code>{balance_url}</code> - <?php _e('Balance check page URL', 'fluentforms-gift-certificates'); ?>
     </div>
     
     <?php

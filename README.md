@@ -106,6 +106,8 @@ A comprehensive WordPress plugin that integrates with Fluent Forms Pro to provid
 ```
 Displays a form to check gift certificate balance.
 
+=======
+
 ### Designs Showcase
 ```
 [gift_certificate_designs]

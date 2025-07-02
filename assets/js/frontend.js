@@ -5,9 +5,6 @@
 jQuery(document).ready(function($) {
     'use strict';
 
-    // Initialize gift certificate functionality
-    FFGC.init();
-
     // Global FFGC object
     window.FFGC = {
         init: function() {
@@ -568,5 +565,7 @@ jQuery(document).ready(function($) {
             }
         `)
         .appendTo('head');
-    
-}); 
+
+    // Initialize gift certificate functionality after object definition
+    FFGC.init();
+});

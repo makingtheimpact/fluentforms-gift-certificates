@@ -15,10 +15,11 @@ class FFGC_Forms {
         // Fluent Forms hooks
         add_action('fluentform_loaded', array($this, 'register_custom_fields'));
         add_action('fluentform_after_form_render', array($this, 'add_gift_certificate_field'));
-        add_action('fluentform_before_insert_submission', array($this, 'process_gift_certificate_purchase'));
+        // Legacy purchase handling hooks removed
+        // add_action('fluentform_before_insert_submission', array($this, 'process_gift_certificate_purchase'));
         add_action('fluentform_before_insert_submission', array($this, 'process_gift_certificate_application'));
         add_filter('fluentform_form_vars', array($this, 'add_form_vars'));
-        add_action('fluentform_after_payment_success', array($this, 'process_payment_success'));
+        // add_action('fluentform_after_payment_success', array($this, 'process_payment_success'));
         
         // AJAX handlers
         add_action('wp_ajax_ffgc_validate_certificate', array($this, 'ajax_validate_certificate'));
@@ -343,86 +344,21 @@ class FFGC_Forms {
     }
     
     /**
-     * Process gift certificate purchase
+     * Process gift certificate purchase (deprecated)
+     *
+     * @deprecated This logic has been replaced by the REST webhook flow.
      */
     public function process_gift_certificate_purchase($insert_data) {
-        $form_id = $insert_data['form_id'];
-        $enabled_forms = get_option('ffgc_forms_enabled', array());
-        
-        if (!in_array($form_id, $enabled_forms)) {
-            return;
-        }
-        
-        if ($this->get_form_type($form_id) !== 'purchase') {
-            return;
-        }
-        
-        // Get form data
-        $form_data = $insert_data['response'];
-        
-        // Extract gift certificate data
-        $design_id = intval($form_data['gift_certificate_design'] ?? 0);
-        $recipient_name = sanitize_text_field($form_data['recipient_name'] ?? '');
-        $recipient_email = sanitize_email($form_data['recipient_email'] ?? '');
-        $personal_message = sanitize_textarea_field($form_data['personal_message'] ?? '');
-        
-        // Calculate amount from form data
-        $amount = $this->calculate_amount_from_form($form_data);
-        
-        if ($amount <= 0) {
-            return;
-        }
-        
-        // Validate design and amount
-        if ($design_id) {
-            $min_amount = get_post_meta($design_id, '_min_amount', true);
-            $max_amount = get_post_meta($design_id, '_max_amount', true);
-            
-            if ($min_amount && $amount < floatval($min_amount)) {
-                return;
-            }
-            if ($max_amount && $amount > floatval($max_amount)) {
-                return;
-            }
-        }
-        
-        // Store purchase data for later processing after payment
-        update_post_meta($insert_data['id'], '_ffgc_purchase_data', array(
-            'design_id' => $design_id,
-            'recipient_name' => $recipient_name,
-            'recipient_email' => $recipient_email,
-            'personal_message' => $personal_message,
-            'amount' => $amount
-        ));
+        return; // Deprecated
     }
     
     /**
-     * Process payment success
+     * Process payment success (deprecated)
+     *
+     * @deprecated This logic has been replaced by the REST webhook flow.
      */
     public function process_payment_success($submission) {
-        $purchase_data = get_post_meta($submission->id, '_ffgc_purchase_data', true);
-        
-        if (!$purchase_data) {
-            return;
-        }
-        
-        // Create gift certificate
-        $certificate_id = $this->create_gift_certificate(array(
-            'amount' => $purchase_data['amount'],
-            'recipient_name' => $purchase_data['recipient_name'],
-            'recipient_email' => $purchase_data['recipient_email'],
-            'personal_message' => $purchase_data['personal_message'],
-            'design_id' => $purchase_data['design_id'],
-            'submission_id' => $submission->id
-        ));
-        
-        if ($certificate_id) {
-            // Send email to recipient
-            $this->send_gift_certificate_email($certificate_id);
-            
-            // Clear purchase data
-            delete_post_meta($submission->id, '_ffgc_purchase_data');
-        }
+        return; // Deprecated
     }
     
     /**

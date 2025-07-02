@@ -19,7 +19,6 @@ if (function_exists('wpFluent')) {
     }
 }
 
-$purchase_forms = get_option('ffgc_purchase_forms', array());
 $redemption_forms = get_option('ffgc_redemption_forms', array());
 ?>
 
@@ -27,40 +26,6 @@ $redemption_forms = get_option('ffgc_redemption_forms', array());
     <h1><?php _e('Gift Certificate Forms Configuration', 'fluentforms-gift-certificates'); ?></h1>
     
     <div class="ffgc-forms-config">
-        <div class="ffgc-config-section">
-            <h2><?php _e('Purchase Forms', 'fluentforms-gift-certificates'); ?></h2>
-            <p><?php _e('Configure forms that will be used for purchasing gift certificates. These forms should include payment fields and the Gift Certificate Design field type.', 'fluentforms-gift-certificates'); ?></p>
-            
-            <form method="post" action="options.php">
-                <?php settings_fields('ffgc_settings'); ?>
-                
-                <table class="form-table">
-                    <tr>
-                        <th scope="row"><?php _e('Purchase Forms', 'fluentforms-gift-certificates'); ?></th>
-                        <td>
-                            <select name="ffgc_purchase_forms[]" multiple style="width: 100%; min-height: 150px;">
-                                <?php foreach ($forms as $form): ?>
-                                    <option value="<?php echo esc_attr($form->id); ?>" 
-                                            <?php echo in_array($form->id, $purchase_forms) ? 'selected' : ''; ?>>
-                                        <?php echo esc_html($form->title); ?>
-                                    </option>
-                                <?php endforeach; ?>
-                            </select>
-                            <p class="description">
-                                <?php _e('Hold Ctrl/Cmd to select multiple forms. These forms should include:', 'fluentforms-gift-certificates'); ?>
-                            </p>
-                            <ul class="description">
-                                <li><?php _e('Payment fields (Payment Method, Custom Payment Amount, etc.)', 'fluentforms-gift-certificates'); ?></li>
-                                <li><?php _e('Gift Certificate Design field type', 'fluentforms-gift-certificates'); ?></li>
-                                <li><?php _e('Recipient information fields (Name, Email, Message)', 'fluentforms-gift-certificates'); ?></li>
-                            </ul>
-                        </td>
-                    </tr>
-                </table>
-                
-                <?php submit_button(__('Save Purchase Forms', 'fluentforms-gift-certificates')); ?>
-            </form>
-        </div>
         
         <div class="ffgc-config-section">
             <h2><?php _e('Redemption Forms', 'fluentforms-gift-certificates'); ?></h2>
@@ -118,7 +83,7 @@ $redemption_forms = get_option('ffgc_redemption_forms', array());
                     </li>
                     <li><?php _e('Configure the Custom Payment Amount field with appropriate minimum/maximum values', 'fluentforms-gift-certificates'); ?></li>
                     <li><?php _e('Set up payment methods and gateways', 'fluentforms-gift-certificates'); ?></li>
-                    <li><?php _e('Save the form and add it to the Purchase Forms list above', 'fluentforms-gift-certificates'); ?></li>
+
                 </ol>
                 
                 <h3><?php _e('Redemption Form Setup', 'fluentforms-gift-certificates'); ?></h3>

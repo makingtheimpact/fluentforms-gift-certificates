@@ -46,7 +46,6 @@ Fluent Forms Gift Certificates is a comprehensive WordPress plugin that seamless
 
 **📱 Frontend Shortcodes**
 * `[gift_certificate_balance]` - Check certificate balances
-* `[gift_certificate_purchase]` - Purchase certificates
 * `[gift_certificate_designs]` - Showcase available designs
 
 **⚙️ Configuration Options**

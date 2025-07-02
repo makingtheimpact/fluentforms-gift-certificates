@@ -30,8 +30,6 @@ class FFGC_Forms {
         add_action('wp_ajax_ffgc_bulk_action', array($this, 'ajax_bulk_action'));
 
         // New AJAX handlers
-        add_action('wp_ajax_ffgc_purchase_certificate', array($this, 'ajax_purchase_certificate'));
-        add_action('wp_ajax_nopriv_ffgc_purchase_certificate', array($this, 'ajax_purchase_certificate'));
         add_action('wp_ajax_ffgc_get_design_details', array($this, 'ajax_get_design_details'));
         add_action('wp_ajax_nopriv_ffgc_get_design_details', array($this, 'ajax_get_design_details'));
         add_action('wp_ajax_ffgc_preview_design', array($this, 'ajax_preview_design'));
@@ -894,46 +892,6 @@ class FFGC_Forms {
     /**
      * AJAX: Purchase certificate
      */
-    public function ajax_purchase_certificate() {
-        check_ajax_referer('ffgc_nonce', 'nonce');
-
-        $amount           = floatval($_POST['amount'] ?? 0);
-        $recipient_name   = sanitize_text_field($_POST['recipient_name'] ?? '');
-        $recipient_email  = sanitize_email($_POST['recipient_email'] ?? '');
-        $personal_message = sanitize_textarea_field($_POST['personal_message'] ?? '');
-        $design_id        = intval($_POST['design_id'] ?? 0);
-
-        if ($amount <= 0 || empty($recipient_name) || empty($recipient_email)) {
-            wp_send_json_error(__('Invalid purchase details.', 'fluentforms-gift-certificates'));
-        }
-
-        if ($design_id) {
-            $min = floatval(get_post_meta($design_id, '_min_amount', true));
-            $max = floatval(get_post_meta($design_id, '_max_amount', true));
-            if ($min && $amount < $min) {
-                wp_send_json_error(sprintf(__('Amount must be at least %s', 'fluentforms-gift-certificates'), $min));
-            }
-            if ($max && $amount > $max) {
-                wp_send_json_error(sprintf(__('Amount cannot exceed %s', 'fluentforms-gift-certificates'), $max));
-            }
-        }
-
-        $certificate_id = $this->create_gift_certificate(array(
-            'amount'          => $amount,
-            'recipient_name'  => $recipient_name,
-            'recipient_email' => $recipient_email,
-            'personal_message'=> $personal_message,
-            'design_id'       => $design_id,
-            'submission_id'   => 0
-        ));
-
-        if ($certificate_id) {
-            $this->send_gift_certificate_email($certificate_id);
-            wp_send_json_success(__('Gift certificate purchased successfully.', 'fluentforms-gift-certificates'));
-        }
-
-        wp_send_json_error(__('Failed to create gift certificate.', 'fluentforms-gift-certificates'));
-    }
 
     /**
      * AJAX: Get design details

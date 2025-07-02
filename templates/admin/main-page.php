@@ -171,11 +171,6 @@ if (!defined('ABSPATH')) {
                     <p><?php _e('Displays a form to check gift certificate balance.', 'fluentforms-gift-certificates'); ?></p>
                 </div>
                 
-                <div class="ffgc-shortcode-item">
-                    <h4><?php _e('Purchase Form', 'fluentforms-gift-certificates'); ?></h4>
-                    <code>[gift_certificate_purchase]</code>
-                    <p><?php _e('Displays a form to purchase gift certificates.', 'fluentforms-gift-certificates'); ?></p>
-                </div>
                 
                 <div class="ffgc-shortcode-item">
                     <h4><?php _e('Designs Showcase', 'fluentforms-gift-certificates'); ?></h4>

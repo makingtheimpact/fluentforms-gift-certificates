@@ -38,7 +38,6 @@ if (!defined('ABSPATH')) {
             <h3><?php _e('3. Use Shortcodes', 'fluentforms-gift-certificates'); ?></h3>
             <ul>
                 <li><code>[gift_certificate_balance]</code> - <?php _e('Check certificate balance', 'fluentforms-gift-certificates'); ?></li>
-                <li><code>[gift_certificate_purchase]</code> - <?php _e('Purchase certificates', 'fluentforms-gift-certificates'); ?></li>
                 <li><code>[gift_certificate_designs]</code> - <?php _e('Show available designs', 'fluentforms-gift-certificates'); ?></li>
             </ul>
         </div>

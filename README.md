@@ -104,11 +104,6 @@ A comprehensive WordPress plugin that integrates with Fluent Forms Pro to provid
 ```
 Displays a form to check gift certificate balance.
 
-### Purchase Form
-```
-[gift_certificate_purchase]
-```
-Displays a form to purchase gift certificates.
 
 ### Designs Showcase
 ```

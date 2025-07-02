@@ -332,32 +332,6 @@ jQuery(document).ready(function($) {
         });
     });
     
-    // Handle purchase form submission
-    $(document).on('submit', '#ffgc-purchase-form', function(e) {
-        e.preventDefault();
-        
-        var formData = $(this).serialize();
-        var resultDiv = $('#ffgc-purchase-result');
-        
-        resultDiv.html('<div class="ffgc-loading">' + ffgc_strings.processing + '</div>').show();
-        
-        $.ajax({
-            url: ffgc_ajax.ajax_url,
-            type: 'POST',
-            data: formData + '&action=ffgc_purchase_certificate&nonce=' + ffgc_ajax.nonce,
-            success: function(response) {
-                if (response.success) {
-                    resultDiv.html('<div class="ffgc-success">' + response.data + '</div>');
-                    $('#ffgc-purchase-form')[0].reset();
-                } else {
-                    resultDiv.html('<div class="ffgc-error">' + response.data + '</div>');
-                }
-            },
-            error: function() {
-                resultDiv.html('<div class="ffgc-error">' + ffgc_strings.error_occurred + '</div>');
-            }
-        });
-    });
     
     // Load usage history
     function loadUsageHistory(code) {
@@ -391,46 +365,6 @@ jQuery(document).ready(function($) {
         });
     }
     
-    // Handle design selection in purchase form
-    $(document).on('change', '#ffgc-design-id', function() {
-        var designId = $(this).val();
-        var amountField = $('#ffgc-purchase-amount');
-        
-        if (designId) {
-            // Get design details and update amount limits
-            $.ajax({
-                url: ffgc_ajax.ajax_url,
-                type: 'POST',
-                data: {
-                    action: 'ffgc_get_design_details',
-                    design_id: designId,
-                    nonce: ffgc_ajax.nonce
-                },
-                success: function(response) {
-                    if (response.success) {
-                        amountField.attr('min', response.data.min_amount);
-                        amountField.attr('max', response.data.max_amount);
-                        amountField.next('small').text('Minimum: $' + response.data.min_amount + ', Maximum: $' + response.data.max_amount);
-                    }
-                }
-            });
-        }
-    });
-    
-    // Handle amount validation in purchase form
-    $(document).on('blur', '#ffgc-purchase-amount', function() {
-        var amount = parseFloat($(this).val());
-        var minAmount = parseFloat($(this).attr('min') || 0);
-        var maxAmount = parseFloat($(this).attr('max') || 999999);
-        
-        if (amount < minAmount) {
-            alert('Amount cannot be less than $' + minAmount.toFixed(2));
-            $(this).val(minAmount.toFixed(2));
-        } else if (amount > maxAmount) {
-            alert('Amount cannot be more than $' + maxAmount.toFixed(2));
-            $(this).val(maxAmount.toFixed(2));
-        }
-    });
     
     // Handle form validation
     $('.ffgc-form').on('submit', function() {
@@ -489,10 +423,6 @@ jQuery(document).ready(function($) {
             $('#ffgc-balance-form').submit();
         }
         
-        // Enter key on purchase form
-        if (e.keyCode === 13 && $('#ffgc-purchase-form').length) {
-            $('#ffgc-purchase-form').submit();
-        }
     });
     
     // Handle form field focus for better UX

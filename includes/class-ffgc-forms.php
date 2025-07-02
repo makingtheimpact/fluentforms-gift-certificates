@@ -963,7 +963,7 @@ class FFGC_Forms {
         }
 
         $certificate = get_posts(array(
-            'post_type'  => 'ffgc_certificate',
+            'post_type' => 'ffgc_cert',
             'meta_query' => array(
                 array(
                     'key'   => '_certificate_code',

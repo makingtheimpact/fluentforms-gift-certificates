@@ -82,7 +82,7 @@ class FFGC_Installer {
             'post_content' => __('Default gift certificate design', 'fluentforms-gift-certificates'),
             'post_status' => 'publish',
             'post_type' => 'ffgc_design',
-            'post_author' => 1
+            'post_author' => function_exists('get_current_user_id') ? (get_current_user_id() ?: 0) : 0
         );
         
         $design_id = wp_insert_post($default_design);

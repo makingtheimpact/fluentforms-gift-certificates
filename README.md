@@ -58,16 +58,18 @@ A comprehensive WordPress plugin that integrates with Fluent Forms Pro to provid
 ### 2. Configure Fluent Forms
 
 #### Purchase Form Setup
-1. Create a new Fluent Form
-2. Add the following field types:
+1. **Enable Fields** - In *Fluent Forms → Global Settings → Elements* turn on the Gift Certificate Design and Redemption fields.
+2. **Connect Payment Gateway** - Configure your preferred gateway under *Fluent Forms → Global Settings → Payment Settings*.
+3. Create a new Fluent Form
+4. Add the following field types:
    - **Gift Certificate Design** - Visual design selection
    - **Text Input** (name: `recipient_name`) - Recipient's name
    - **Email Input** (name: `recipient_email`) - Recipient's email
    - **Textarea** (name: `personal_message`) - Personal message
    - **Custom Payment Amount** - Gift certificate amount
    - **Payment Method** - Payment processing
-3. Configure payment settings
-4. Save and add to Purchase Forms list
+5. Configure payment settings
+6. Save and add to Purchase Forms list
 
 #### Redemption Form Setup
 1. Create a new Fluent Form
@@ -81,7 +83,7 @@ A comprehensive WordPress plugin that integrates with Fluent Forms Pro to provid
 ### 3. Configure Forms Integration
 
 1. Go to **Gift Certificates > Configure Forms**
-2. Select forms for purchasing and redemption
+2. Choose the purchase and redemption forms you created earlier. Hold Ctrl/Cmd to pick multiple forms and click **Save**.
 3. Configure field display settings
 4. Set up auto-apply options
 
@@ -104,6 +106,7 @@ A comprehensive WordPress plugin that integrates with Fluent Forms Pro to provid
 ```
 Displays a form to check gift certificate balance.
 
+=======
 
 ### Designs Showcase
 ```

@@ -76,6 +76,12 @@ Fluent Forms Gift Certificates is a comprehensive WordPress plugin that seamless
 4. Enable the forms you want to use for gift certificates
 5. Create your first certificate design
 
+== Configuration ==
+1. Enable the Gift Certificate Design and Redemption fields under **Fluent Forms → Global Settings → Elements**.
+2. Connect your preferred gateway in **Fluent Forms → Global Settings → Payment Settings**.
+3. Build purchase and redemption forms with the required fields.
+4. Open **Gift Certificates → Configure Forms**, choose your purchase and redemption forms (hold Ctrl/Cmd for multiple selections), then save.
+
 == Frequently Asked Questions ==
 
 = Does this work with the free version of Fluent Forms? =

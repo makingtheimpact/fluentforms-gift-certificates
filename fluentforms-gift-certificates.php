@@ -3,7 +3,7 @@
  * Plugin Name: Fluent Forms Gift Certificates
  * Plugin URI: https://github.com/your-username/fluentforms-gift-certificates
  * Description: Generate and manage gift certificates for Fluent Forms with customizable designs and automatic email delivery.
- * Version: 1.0.2
+ * Version: 1.0.3
  * Author: Making The Impact LLC
  * Author URI: https://makingtheimpact.com
  * License: GPL v2 or later
@@ -25,7 +25,7 @@ if (!defined('ABSPATH')) {
 require_once(ABSPATH . 'wp-admin/includes/plugin.php');
 
 // Define plugin constants
-define('FFGC_VERSION', '1.0.2');
+define('FFGC_VERSION', '1.0.3');
 define('FFGC_PLUGIN_FILE', __FILE__);
 define('FFGC_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('FFGC_PLUGIN_URL', plugin_dir_url(__FILE__));

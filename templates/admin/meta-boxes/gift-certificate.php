@@ -33,10 +33,10 @@ if (!defined('ABSPATH')) {
     
     <tr>
         <th scope="row">
-            <label for="_certificate_status"><?php _e('Status', 'fluentforms-gift-certificates'); ?></label>
+            <label for="_status"><?php _e('Status', 'fluentforms-gift-certificates'); ?></label>
         </th>
         <td>
-            <select id="_certificate_status" name="_certificate_status">
+            <select id="_status" name="_status">
                 <option value="unused" <?php selected($status, 'unused'); ?>><?php _e('Unused', 'fluentforms-gift-certificates'); ?></option>
                 <option value="used" <?php selected($status, 'used'); ?>><?php _e('Used', 'fluentforms-gift-certificates'); ?></option>
                 <option value="expired" <?php selected($status, 'expired'); ?>><?php _e('Expired', 'fluentforms-gift-certificates'); ?></option>

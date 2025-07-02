@@ -296,6 +296,24 @@ class FFGC_Installer {
                 delete_post_meta($certificate->ID, '_usage_log');
             }
         }
+
+        // Migrate certificate status meta key
+        if (version_compare($current_version, '1.0.3', '<')) {
+            $certificates = get_posts(array(
+                'post_type'      => 'ffgc_cert',
+                'posts_per_page' => -1,
+                'post_status'    => 'any',
+            ));
+
+            foreach ($certificates as $certificate) {
+                $old_status = get_post_meta($certificate->ID, '_certificate_status', true);
+                $new_status = get_post_meta($certificate->ID, '_status', true);
+
+                if ($old_status !== '' && $new_status === '') {
+                    update_post_meta($certificate->ID, '_status', $old_status);
+                }
+            }
+        }
         
         // Update version
         update_option('ffgc_version', FFGC_VERSION);

@@ -71,3 +71,66 @@ if (!function_exists('ffgc_sanitize_email_template')) {
     }
 }
 
+if (!function_exists('ffgc_create_coupon')) {
+    /**
+     * Create or update a Fluent Forms coupon entry.
+     *
+     * @param string      $code  Coupon code.
+     * @param float       $amount Coupon amount.
+     * @param string|null $expiry Optional expiry date (Y-m-d H:i:s).
+     * @return void
+     */
+    function ffgc_create_coupon($code, $amount, $expiry = null) {
+        global $wpdb;
+        $table = $wpdb->prefix . 'fluentform_coupons';
+
+        // Bail if coupon table doesn't exist
+        if ($wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s', $table)) !== $table) {
+            return;
+        }
+
+        $existing_id = $wpdb->get_var($wpdb->prepare("SELECT id FROM {$table} WHERE coupon_code = %s", $code));
+
+        $data = array(
+            'coupon_title' => 'Gift Certificate ' . $code,
+            'coupon_code'  => $code,
+            'coupon_type'  => 'fixed',
+            'amount'       => $amount,
+            'status'       => 'published',
+            'updated_at'   => current_time('mysql'),
+        );
+
+        if ($expiry) {
+            $data['expire_date'] = $expiry;
+        }
+
+        if ($existing_id) {
+            $wpdb->update($table, $data, array('id' => $existing_id));
+        } else {
+            $data['created_at']  = current_time('mysql');
+            $data['usage_limit'] = 1;
+            $data['usage_count'] = 0;
+            $wpdb->insert($table, $data);
+        }
+    }
+}
+
+if (!function_exists('ffgc_delete_coupon')) {
+    /**
+     * Delete a Fluent Forms coupon by code.
+     *
+     * @param string $code Coupon code.
+     * @return void
+     */
+    function ffgc_delete_coupon($code) {
+        global $wpdb;
+        $table = $wpdb->prefix . 'fluentform_coupons';
+
+        if ($wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s', $table)) !== $table) {
+            return;
+        }
+
+        $wpdb->delete($table, array('coupon_code' => $code));
+    }
+}
+

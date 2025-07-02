@@ -432,6 +432,8 @@ class FFGC_Forms {
         $certificate_id = wp_insert_post($post_data);
         
         if ($certificate_id) {
+            $expiry = date('Y-m-d H:i:s', strtotime('+' . get_option('ffgc_expiry_days', 365) . ' days'));
+
             update_post_meta($certificate_id, '_certificate_code', $code);
             update_post_meta($certificate_id, '_certificate_amount', $data['amount']);
             update_post_meta($certificate_id, '_certificate_balance', $data['amount']);
@@ -440,9 +442,12 @@ class FFGC_Forms {
             update_post_meta($certificate_id, '_design_id', $data['design_id']);
             update_post_meta($certificate_id, '_submission_id', $data['submission_id']);
             update_post_meta($certificate_id, '_created_date', current_time('mysql'));
-            update_post_meta($certificate_id, '_expiry_date', date('Y-m-d H:i:s', strtotime('+' . get_option('ffgc_expiry_days', 365) . ' days')));
+            update_post_meta($certificate_id, '_expiry_date', $expiry);
             update_post_meta($certificate_id, '_status', 'active');
-            
+
+            // Create matching Fluent Forms coupon
+            ffgc_create_coupon($code, $data['amount'], $expiry);
+
             return $certificate_id;
         }
         
@@ -504,6 +509,7 @@ class FFGC_Forms {
         
         if ($expiry_date && strtotime($expiry_date) < time()) {
             update_post_meta($certificate->ID, '_status', 'expired');
+            ffgc_delete_coupon($code);
             return false;
         }
         
@@ -511,7 +517,13 @@ class FFGC_Forms {
         $amount_to_apply = $balance;
         
         // Update balance
-        update_post_meta($certificate->ID, '_certificate_balance', $balance - $amount_to_apply);
+        $new_balance = $balance - $amount_to_apply;
+        update_post_meta($certificate->ID, '_certificate_balance', $new_balance);
+
+        if ($new_balance <= 0) {
+            update_post_meta($certificate->ID, '_status', 'used');
+            ffgc_delete_coupon($code);
+        }
         
         // Log usage
         $this->log_certificate_usage($certificate->ID, $form_id, $submission_id, $amount_to_apply);

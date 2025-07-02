@@ -103,6 +103,8 @@ $redemption_forms = get_option('ffgc_redemption_forms', array());
             <div class="ffgc-setup-guide">
                 <h3><?php _e('Purchase Form Setup', 'fluentforms-gift-certificates'); ?></h3>
                 <ol>
+                    <li><?php _e('Enable the Gift Certificate fields in Fluent Forms → Global Settings → Elements', 'fluentforms-gift-certificates'); ?></li>
+                    <li><?php _e('Connect your payment gateway in Fluent Forms → Global Settings → Payment Settings', 'fluentforms-gift-certificates'); ?></li>
                     <li><?php _e('Create a new Fluent Form or edit an existing one', 'fluentforms-gift-certificates'); ?></li>
                     <li><?php _e('Add the following field types:', 'fluentforms-gift-certificates'); ?>
                         <ul>

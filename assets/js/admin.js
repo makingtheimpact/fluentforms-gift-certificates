@@ -5,9 +5,6 @@
 jQuery(document).ready(function($) {
     'use strict';
 
-    // Initialize admin functionality
-    FFGC_Admin.init();
-
     // Global FFGC Admin object
     window.FFGC_Admin = {
         init: function() {
@@ -316,6 +313,9 @@ jQuery(document).ready(function($) {
             }, 3000);
         }
     };
+
+    // Initialize admin functionality after object definition
+    FFGC_Admin.init();
 
     // Initialize frontend functionality for admin preview
     if (typeof window.FFGC !== 'undefined') {

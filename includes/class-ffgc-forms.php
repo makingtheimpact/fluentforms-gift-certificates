@@ -61,8 +61,8 @@ class FFGC_Forms {
         add_action('fluentform_render_item_gift_certificate_design', array($this, 'render_design_field'), 10, 2);
         add_action('fluentform_render_item_gift_certificate_redemption', array($this, 'render_redemption_field'), 10, 2);
         
-        // Add field templates for the editor
-        add_action('wp_footer', array($this, 'add_field_templates'));
+        // Add field templates for the editor in admin area
+        add_action('admin_footer', array($this, 'add_field_templates'));
         
         // Add custom field scripts and styles
         add_action('fluentform_editor_scripts', array($this, 'add_editor_scripts'));

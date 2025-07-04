@@ -755,7 +755,12 @@ class FFGC_Forms {
         }
         
         $design_id = intval($_POST['design_id'] ?? 0);
-        $is_active = $_POST['is_active'] === 'true';
+
+        if (!isset($_POST['is_active'])) {
+            wp_send_json_error('Missing design status');
+        }
+
+        $is_active = isset($_POST['is_active']) && $_POST['is_active'] === 'true';
         
         if (!$design_id) {
             wp_send_json_error('Invalid design ID');

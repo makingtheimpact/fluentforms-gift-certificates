@@ -245,7 +245,7 @@ class FFGC_Installer {
         // Migrate meta keys for certificates
         if (version_compare($current_version, '1.0.1', '<')) {
             $certificates = get_posts(array(
-                'post_type' => 'ffgc_certificate',
+                'post_type' => 'ffgc_cert',
                 'posts_per_page' => -1,
                 'post_status' => 'any'
             ));

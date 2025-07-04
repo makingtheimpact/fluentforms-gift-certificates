@@ -391,7 +391,8 @@ class FFGC_Forms {
      * Create gift certificate
      */
     private function create_gift_certificate($data) {
-        $code = $this->generate_unique_code();
+        $code   = $this->generate_unique_code();
+        $amount = apply_filters('ffgc_certificate_amount', $data['amount'], $data);
         
         $post_data = array(
             'post_title' => sprintf(__('Gift Certificate - %s', 'fluentforms-gift-certificates'), $code),
@@ -406,8 +407,9 @@ class FFGC_Forms {
             $expiry = date('Y-m-d H:i:s', strtotime('+' . get_option('ffgc_expiry_days', 365) . ' days'));
 
             update_post_meta($certificate_id, '_certificate_code', $code);
-            update_post_meta($certificate_id, '_certificate_amount', $data['amount']);
-            update_post_meta($certificate_id, '_certificate_balance', $data['amount']);
+            update_post_meta($certificate_id, '_certificate_amount', $amount);
+            update_post_meta($certificate_id, '_certificate_balance', $amount);
+            update_post_meta($certificate_id, '_certificate_used_amount', 0);
             update_post_meta($certificate_id, '_recipient_name', $data['recipient_name']);
             update_post_meta($certificate_id, '_recipient_email', $data['recipient_email']);
             update_post_meta($certificate_id, '_design_id', $data['design_id']);
@@ -417,7 +419,9 @@ class FFGC_Forms {
             update_post_meta($certificate_id, '_status', 'active');
 
             // Create matching Fluent Forms coupon
-            ffgc_create_coupon($code, $data['amount'], $expiry);
+            ffgc_create_coupon($code, $amount, $expiry);
+
+            do_action('ffgc_certificate_created', $certificate_id, $data);
 
             return $certificate_id;
         }
@@ -445,7 +449,7 @@ class FFGC_Forms {
             ));
         } while (!empty($existing));
         
-        return $code;
+        return apply_filters('ffgc_certificate_code', $code);
     }
     
     /**
@@ -481,6 +485,7 @@ class FFGC_Forms {
         if ($expiry_date && strtotime($expiry_date) < time()) {
             update_post_meta($certificate->ID, '_status', 'expired');
             ffgc_delete_coupon($code);
+            do_action('ffgc_certificate_expired', $certificate->ID);
             return false;
         }
         
@@ -490,6 +495,9 @@ class FFGC_Forms {
         // Update balance
         $new_balance = $balance - $amount_to_apply;
         update_post_meta($certificate->ID, '_certificate_balance', $new_balance);
+        $used_amount = get_post_meta($certificate->ID, '_certificate_used_amount', true);
+        $used_amount = $used_amount ? floatval($used_amount) : 0;
+        update_post_meta($certificate->ID, '_certificate_used_amount', $used_amount + $amount_to_apply);
 
         if ($new_balance <= 0) {
             update_post_meta($certificate->ID, '_status', 'used');
@@ -498,7 +506,9 @@ class FFGC_Forms {
         
         // Log usage
         $this->log_certificate_usage($certificate->ID, $form_id, $submission_id, $amount_to_apply);
-        
+
+        do_action('ffgc_certificate_applied', $certificate->ID, $amount_to_apply, $new_balance, $form_id, $submission_id);
+
         return $amount_to_apply;
     }
     

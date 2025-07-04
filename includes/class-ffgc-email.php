@@ -55,6 +55,8 @@ class FFGC_Email {
             'site_url' => get_site_url(),
             'balance_url' => $this->get_balance_url()
         ));
+
+        $email_content = apply_filters('ffgc_email_content', $email_content, $certificate_id);
         
         // Email headers
         $from_name = get_option('ffgc_email_from_name', get_bloginfo('name'));

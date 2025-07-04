@@ -230,7 +230,17 @@ class FFGC_Core {
         ));
 
         foreach ($certificates as $cert) {
-            $code = get_post_meta($cert->ID, '_certificate_code', true);
+            $code    = get_post_meta($cert->ID, '_certificate_code', true);
+            $expiry  = get_post_meta($cert->ID, '_expiry_date', true);
+            $balance = get_post_meta($cert->ID, '_certificate_balance', true);
+
+            if ($expiry && strtotime($expiry) < time()) {
+                update_post_meta($cert->ID, '_status', 'expired');
+                do_action('ffgc_certificate_expired', $cert->ID);
+            } elseif ($balance <= 0) {
+                update_post_meta($cert->ID, '_status', 'used');
+            }
+
             ffgc_delete_coupon($code);
         }
     }

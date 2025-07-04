@@ -317,6 +317,6 @@ class FFGC_Post_Types {
             ));
         } while (!empty($existing));
 
-        return $code;
+        return apply_filters('ffgc_certificate_code', $code);
     }
-} 
+}

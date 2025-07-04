@@ -121,7 +121,8 @@ class FFGC_Webhooks {
     }
 
     private function create_gift_certificate($data) {
-        $code = $this->generate_unique_code();
+        $code   = $this->generate_unique_code();
+        $amount = apply_filters('ffgc_certificate_amount', $data['amount'], $data);
 
         $post_data = array(
             'post_title'   => sprintf(__('Gift Certificate - %s', 'fluentforms-gift-certificates'), $code),
@@ -136,8 +137,9 @@ class FFGC_Webhooks {
             $expiry = date('Y-m-d H:i:s', strtotime('+' . get_option('ffgc_expiry_days', 365) . ' days'));
 
             update_post_meta($certificate_id, '_certificate_code', $code);
-            update_post_meta($certificate_id, '_certificate_amount', $data['amount']);
-            update_post_meta($certificate_id, '_certificate_balance', $data['amount']);
+            update_post_meta($certificate_id, '_certificate_amount', $amount);
+            update_post_meta($certificate_id, '_certificate_balance', $amount);
+            update_post_meta($certificate_id, '_certificate_used_amount', 0);
             update_post_meta($certificate_id, '_recipient_name', $data['recipient_name']);
             update_post_meta($certificate_id, '_recipient_email', $data['recipient_email']);
             update_post_meta($certificate_id, '_design_id', $data['design_id']);
@@ -146,7 +148,9 @@ class FFGC_Webhooks {
             update_post_meta($certificate_id, '_status', 'active');
 
             // Create matching Fluent Forms coupon
-            ffgc_create_coupon($code, $data['amount'], $expiry);
+            ffgc_create_coupon($code, $amount, $expiry);
+
+            do_action('ffgc_certificate_created', $certificate_id, $data);
 
             return $certificate_id;
         }
@@ -170,6 +174,6 @@ class FFGC_Webhooks {
             ));
         } while (!empty($existing));
 
-        return $code;
+        return apply_filters('ffgc_certificate_code', $code);
     }
 }

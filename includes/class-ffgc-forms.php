@@ -46,6 +46,10 @@ class FFGC_Forms {
         add_action('save_post_ffgc_design', array($this, 'clear_design_cache'));
         add_action('delete_post', array($this, 'maybe_clear_design_cache'));
         add_action('trashed_post', array($this, 'maybe_clear_design_cache'));
+
+        // Coupon integration
+        add_filter('fluentform/validate_coupon', array($this, 'validate_coupon'), 10, 2);
+        add_action('fluentform_coupon_applied', array($this, 'coupon_applied'), 10, 3);
     }
     
     /**
@@ -968,6 +972,65 @@ class FFGC_Forms {
             'currency_symbol' => ffgc_get_currency_symbol($currency)
         ));
         wp_localize_script('ffgc-frontend', 'ffgc_strings', ffgc_get_script_strings());
+    }
+
+    /**
+     * Validate Fluent Forms coupon codes against gift certificate data.
+     *
+     * @param bool  $is_valid   Whether the coupon is valid so far.
+     * @param array $coupon     Coupon record from Fluent Forms.
+     * @return bool
+     */
+    public function validate_coupon($is_valid, $coupon) {
+        $code = $coupon['coupon_code'] ?? '';
+        if (!$code) {
+            return $is_valid;
+        }
+
+        $certificate = get_posts(array(
+            'post_type'      => 'ffgc_cert',
+            'posts_per_page' => 1,
+            'meta_query'     => array(
+                array(
+                    'key'     => '_certificate_code',
+                    'value'   => $code,
+                    'compare' => '=',
+                ),
+            ),
+        ));
+
+        if (empty($certificate)) {
+            return false;
+        }
+
+        $cert       = $certificate[0];
+        $balance    = get_post_meta($cert->ID, '_certificate_balance', true);
+        $status     = get_post_meta($cert->ID, '_status', true);
+        $expiry     = get_post_meta($cert->ID, '_expiry_date', true);
+
+        if ($status !== 'active' || $balance <= 0) {
+            return false;
+        }
+
+        if ($expiry && strtotime($expiry) < time()) {
+            update_post_meta($cert->ID, '_status', 'expired');
+            ffgc_delete_coupon($code);
+            return false;
+        }
+
+        return $is_valid;
+    }
+
+    /**
+     * Handle coupon application and deduct the certificate balance.
+     *
+     * @param string $code          Coupon code applied.
+     * @param int    $form_id       Form ID.
+     * @param int    $submission_id Submission ID.
+     * @return void
+     */
+    public function coupon_applied($code, $form_id, $submission_id) {
+        $this->apply_gift_certificate($code, $form_id, $submission_id);
     }
     
     /**

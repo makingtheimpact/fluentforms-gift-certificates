@@ -342,12 +342,6 @@ class FFGC_Settings {
         echo '<p class="description">' . __('Subject line for gift certificate emails.', 'fluentforms-gift-certificates') . '</p>';
     }
     
-    /**
-     * @deprecated No longer configurable via settings.
-     */
-    public function purchase_forms_field_callback() {
-        echo '<p>' . __('This option has been deprecated.', 'fluentforms-gift-certificates') . '</p>';
-    }
     
     public function redemption_forms_field_callback() {
         $selected_forms = get_option('ffgc_redemption_forms', array());
@@ -362,12 +356,6 @@ class FFGC_Settings {
         echo '<p class="description">' . __('Select forms that will allow users to redeem gift certificates. These forms should include the Gift Certificate Redemption field type.', 'fluentforms-gift-certificates') . '</p>';
     }
     
-    /**
-     * @deprecated Legacy form enable option.
-     */
-    public function forms_enabled_field_callback() {
-        echo '<p>' . __('This option has been deprecated.', 'fluentforms-gift-certificates') . '</p>';
-    }
     
     public function field_label_callback() {
         $value = get_option('ffgc_gift_certificate_field_label', __('Gift Certificate Code', 'fluentforms-gift-certificates'));

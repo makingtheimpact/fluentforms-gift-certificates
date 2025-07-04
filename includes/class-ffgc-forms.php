@@ -14,7 +14,8 @@ class FFGC_Forms {
     public function __construct() {
         // Fluent Forms hooks
         add_action('fluentform_loaded', array($this, 'register_custom_fields'));
-        add_action('fluentform_after_form_render', array($this, 'add_gift_certificate_field'));
+        // Automatic field injection deprecated
+        // add_action('fluentform_after_form_render', array($this, 'add_gift_certificate_field'));
         // Legacy purchase handling hooks removed
         // add_action('fluentform_before_insert_submission', array($this, 'process_gift_certificate_purchase'));
         add_action('fluentform_before_insert_submission', array($this, 'process_gift_certificate_application'));
@@ -281,20 +282,8 @@ class FFGC_Forms {
      * Add gift certificate field to enabled forms
      */
     public function add_gift_certificate_field($form) {
-        $enabled_forms = get_option('ffgc_forms_enabled', array());
-        
-        if (!in_array($form->id, $enabled_forms)) {
-            return;
-        }
-        
-        // Check if this is a gift certificate purchase form or application form
-        $form_type = $this->get_form_type($form->id);
-        
-        if ($form_type === 'purchase') {
-            $this->add_purchase_fields($form);
-        } elseif ($form_type === 'application') {
-            $this->add_application_field($form);
-        }
+        // Deprecated: fields should be added via the form builder.
+        return;
     }
     
     /**
@@ -343,34 +332,12 @@ class FFGC_Forms {
         // This is now handled by the custom redemption field type
     }
     
-    /**
-     * Process gift certificate purchase (deprecated)
-     *
-     * @deprecated This logic has been replaced by the REST webhook flow.
-     */
-    public function process_gift_certificate_purchase($insert_data) {
-        return; // Deprecated
-    }
-    
-    /**
-     * Process payment success (deprecated)
-     *
-     * @deprecated This logic has been replaced by the REST webhook flow.
-     */
-    public function process_payment_success($submission) {
-        return; // Deprecated
-    }
     
     /**
      * Process gift certificate application
      */
     public function process_gift_certificate_application($insert_data) {
         $form_id = $insert_data['form_id'];
-        $enabled_forms = get_option('ffgc_forms_enabled', array());
-        
-        if (!in_array($form_id, $enabled_forms)) {
-            return;
-        }
         
         if ($this->get_form_type($form_id) !== 'application') {
             return;
